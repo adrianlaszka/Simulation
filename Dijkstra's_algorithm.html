@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html class="client-nojs" lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<title>Dijkstra's algorithm - Wikipedia</title>
+<script>document.documentElement.className = document.documentElement.className.replace( /(^|\s)client-nojs(\s|$)/, "$1client-js$2" );</script>
+<script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":false,"wgNamespaceNumber":0,"wgPageName":"Dijkstra's_algorithm","wgTitle":"Dijkstra's algorithm","wgCurRevisionId":808682694,"wgRevisionId":808682694,"wgArticleId":45809,"wgIsArticle":true,"wgIsRedirect":false,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":["Pages using deprecated image syntax","Use dmy dates from February 2011","Articles with example pseudocode","Edsger W. Dijkstra","1959 in computer science","Graph algorithms","Search algorithms","Routing algorithms","Combinatorial optimization"],"wgBreakFrames":false,"wgPageContentLanguage":"en","wgPageContentModel":"wikitext","wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","January","February","March","April","May","June","July","August","September","October","November","December"],"wgMonthNamesShort":["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"wgRelevantPageName":"Dijkstra's_algorithm","wgRelevantArticleId":45809,"wgRequestId":"WgT7ZQpAAEEAAD0QszwAAAAK","wgIsProbablyEditable":true,"wgRelevantPageIsProbablyEditable":true,"wgRestrictionEdit":[],"wgRestrictionMove":[],"wgFlaggedRevsParams":{"tags":{}},"wgStableRevisionId":null,"wgWikiEditorEnabledModules":{"toolbar":true,"preview":false,"publish":false},"wgBetaFeaturesFeatures":[],"wgMediaViewerOnClick":true,"wgMediaViewerEnabledByDefault":true,"wgPopupsShouldSendModuleToUser":true,"wgPopupsConflictsWithNavPopupGadget":false,"wgVisualEditor":{"pageLanguageCode":"en","pageLanguageDir":"ltr","pageVariantFallbacks":"en","usePageImages":true,"usePageDescriptions":true},"wgPreferredVariant":"en","wgMFExpandAllSectionsUserOption":false,"wgMFDisplayWikibaseDescriptions":{"search":true,"nearby":true,"watchlist":true,"tagline":false},"wgRelatedArticles":null,"wgRelatedArticlesUseCirrusSearch":true,"wgRelatedArticlesOnlyUseCirrusSearch":false,"wgULSCurrentAutonym":"English","wgNoticeProject":"wikipedia","wgCentralNoticeCookiesToDelete":[],"wgCentralNoticeCategoriesUsingLegacy":["Fundraising","fundraising"],"wgCategoryTreePageCategoryOptions":"{\"mode\":0,\"hideprefix\":20,\"showcount\":true,\"namespaces\":false}","wgWikibaseItemId":"Q8548","wgCentralAuthMobileDomain":false,"wgCodeMirrorEnabled":false,"wgVisualEditorToolbarScrollOffset":0,"wgVisualEditorUnsupportedEditParams":["undo","undoafter","veswitched"],"wgEditSubmitButtonLabelPublish":false});mw.loader.state({"ext.gadget.charinsert-styles":"ready","ext.globalCssJs.user.styles":"ready","ext.globalCssJs.site.styles":"ready","site.styles":"ready","noscript":"ready","user.styles":"ready","user":"ready","user.options":"ready","user.tokens":"loading","ext.math.styles":"ready","ext.cite.styles":"ready","wikibase.client.init":"ready","ext.visualEditor.desktopArticleTarget.noscript":"ready","ext.uls.interlanguage":"ready","ext.wikimediaBadges":"ready","mediawiki.legacy.shared":"ready","mediawiki.legacy.commonPrint":"ready","mediawiki.sectionAnchor":"ready","mediawiki.skinning.interface":"ready","skins.vector.styles":"ready","ext.globalCssJs.user":"ready","ext.globalCssJs.site":"ready"});mw.loader.implement("user.tokens@1dqfd7l",function ( $, jQuery, require, module ) {
+mw.user.tokens.set({"editToken":"+\\","patrolToken":"+\\","watchToken":"+\\","csrfToken":"+\\"});/*@nomin*/
+
+});mw.loader.load(["ext.math.scripts","ext.cite.a11y","site","mediawiki.page.startup","mediawiki.user","mediawiki.hidpi","mediawiki.page.ready","mediawiki.toc","mediawiki.searchSuggest","ext.gadget.teahouse","ext.gadget.ReferenceTooltips","ext.gadget.watchlist-notice","ext.gadget.DRN-wizard","ext.gadget.charinsert","ext.gadget.refToolbar","ext.gadget.extra-toolbar-buttons","ext.gadget.switcher","ext.centralauth.centralautologin","mmv.head","mmv.bootstrap.autostart","ext.popups","ext.visualEditor.desktopArticleTarget.init","ext.visualEditor.targetLoader","ext.eventLogging.subscriber","ext.wikimediaEvents","ext.navigationTiming","ext.uls.eventlogger","ext.uls.init","ext.uls.interface","ext.centralNotice.geoIP","ext.centralNotice.startUp","skins.vector.js"]);});</script>
+<link rel="stylesheet" href="/w/load.php?debug=false&amp;lang=en&amp;modules=ext.cite.styles%7Cext.math.styles%7Cext.uls.interlanguage%7Cext.visualEditor.desktopArticleTarget.noscript%7Cext.wikimediaBadges%7Cmediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.sectionAnchor%7Cmediawiki.skinning.interface%7Cskins.vector.styles%7Cwikibase.client.init&amp;only=styles&amp;skin=vector"/>
+<script async="" src="/w/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=vector"></script>
+<meta name="ResourceLoaderDynamicStyles" content=""/>
+<link rel="stylesheet" href="/w/load.php?debug=false&amp;lang=en&amp;modules=ext.gadget.charinsert-styles&amp;only=styles&amp;skin=vector"/>
+<link rel="stylesheet" href="/w/load.php?debug=false&amp;lang=en&amp;modules=site.styles&amp;only=styles&amp;skin=vector"/>
+<meta name="generator" content="MediaWiki 1.31.0-wmf.7"/>
+<meta name="referrer" content="origin-when-cross-origin"/>
+<meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/5/57/Dijkstra_Animation.gif"/>
+<link rel="alternate" href="android-app://org.wikipedia/http/en.m.wikipedia.org/wiki/Dijkstra%27s_algorithm"/>
+<link rel="alternate" type="application/x-wiki" title="Edit this page" href="/w/index.php?title=Dijkstra%27s_algorithm&amp;action=edit"/>
+<link rel="edit" title="Edit this page" href="/w/index.php?title=Dijkstra%27s_algorithm&amp;action=edit"/>
+<link rel="apple-touch-icon" href="/static/apple-touch/wikipedia.png"/>
+<link rel="shortcut icon" href="/static/favicon/wikipedia.ico"/>
+<link rel="search" type="application/opensearchdescription+xml" href="/w/opensearch_desc.php" title="Wikipedia (en)"/>
+<link rel="EditURI" type="application/rsd+xml" href="//en.wikipedia.org/w/api.php?action=rsd"/>
+<link rel="license" href="//creativecommons.org/licenses/by-sa/3.0/"/>
+<link rel="canonical" href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm"/>
+<link rel="dns-prefetch" href="//login.wikimedia.org"/>
+<link rel="dns-prefetch" href="//meta.wikimedia.org" />
+<!--[if lt IE 9]><script src="/w/load.php?debug=false&amp;lang=en&amp;modules=html5shiv&amp;only=scripts&amp;skin=vector&amp;sync=1"></script><![endif]-->
+</head>
+<body class="mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject page-Dijkstra_s_algorithm rootpage-Dijkstra_s_algorithm vector-nav-directionality skin-vector action-view">		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<div id="content" class="mw-body" role="main">
+			<a id="top"></a>
+
+							<div id="siteNotice" class="mw-body-content"><!-- CentralNotice --></div>
+						<div class="mw-indicators mw-body-content">
+</div>
+			<h1 id="firstHeading" class="firstHeading" lang="en">Dijkstra's algorithm</h1>
+									<div id="bodyContent" class="mw-body-content">
+									<div id="siteSub" class="noprint">From Wikipedia, the free encyclopedia</div>
+								<div id="contentSub"></div>
+												<div id="jump-to-nav" class="mw-jump">
+					Jump to:					<a href="#mw-head">navigation</a>, 					<a href="#p-search">search</a>
+				</div>
+				<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><div class="mw-parser-output"><div role="note" class="hatnote navigation-not-searchable">Not to be confused with <a href="/wiki/Dykstra%27s_projection_algorithm" title="Dykstra's projection algorithm">Dykstra's projection algorithm</a>.</div>
+<table class="infobox" style="width:22em">
+<caption>Dijkstra's algorithm</caption>
+<tr>
+<td colspan="2" style="text-align:center"><a href="/wiki/File:Dijkstra_Animation.gif" class="image" title="Dijkstra's algorithm runtime"><img alt="Dijkstra's algorithm runtime" src="//upload.wikimedia.org/wikipedia/commons/5/57/Dijkstra_Animation.gif" width="283" height="222" data-file-width="283" data-file-height="222" /></a>
+<div>Dijkstra's algorithm to find the shortest path between <i>a</i> and <i>b</i>. It picks the unvisited vertex with the lowest distance, calculates the distance through it to each unvisited neighbor, and updates the neighbor's distance if smaller. Mark visited (set to red) when done with neighbors.</div>
+</td>
+</tr>
+<tr>
+<th scope="row">Class</th>
+<td><a href="/wiki/Search_algorithm" title="Search algorithm">Search algorithm</a></td>
+</tr>
+<tr>
+<th scope="row">Data structure</th>
+<td><a href="/wiki/Graph_(data_structure)" class="mw-redirect" title="Graph (data structure)">Graph</a></td>
+</tr>
+<tr>
+<th scope="row"><a href="/wiki/Best,_worst_and_average_case" title="Best, worst and average case">Worst-case performance</a></th>
+<td><span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>O</mi>
+        <mo stretchy="false">(</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>E</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo>+</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>log</mi>
+        <mo>&#x2061;<!-- ⁡ --></mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle O(|E|+|V|\log |V|)}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/4fcb7644781d08e9e958d4a430a3107da04bf1b3" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:19.567ex; height:2.843ex;" alt="O(|E|+|V|\log |V|)" /></span></td>
+</tr>
+</table>
+<table class="vertical-navbox nowraplinks hlist" style="float:right;clear:right;width:22.0em;margin:0 0 1.0em 1.0em;background:#f9f9f9;border:1px solid #aaa;padding:0.2em;border-spacing:0.4em 0;text-align:center;line-height:1.4em;font-size:88%">
+<tr>
+<th style="padding:0.2em 0.4em 0.2em;font-size:145%;line-height:1.2em"><a href="/wiki/Graph_traversal" title="Graph traversal">Graph</a> and <a href="/wiki/Tree_traversal" title="Tree traversal">tree<br />
+search algorithms</a></th>
+</tr>
+<tr>
+<td style="padding:0 0.1em 0.4em">
+<ul>
+<li><a href="/wiki/Alpha%E2%80%93beta_pruning" title="Alpha–beta pruning">α–β</a></li>
+<li><a href="/wiki/A*_search_algorithm" title="A* search algorithm">A*</a></li>
+<li><a href="/wiki/B*" title="B*">B*</a></li>
+<li><a href="/wiki/Backtracking" title="Backtracking">Backtracking</a></li>
+<li><a href="/wiki/Beam_search" title="Beam search">Beam</a></li>
+<li><a href="/wiki/Bellman%E2%80%93Ford_algorithm" title="Bellman–Ford algorithm">Bellman–Ford</a></li>
+<li><a href="/wiki/Best-first_search" title="Best-first search">Best-first</a></li>
+<li><a href="/wiki/Bidirectional_search" title="Bidirectional search">Bidirectional</a></li>
+<li><a href="/wiki/Bor%C5%AFvka%27s_algorithm" title="Borůvka's algorithm">Borůvka</a></li>
+<li><a href="/wiki/Branch_and_bound" title="Branch and bound">Branch &amp; bound</a></li>
+<li><a href="/wiki/Breadth-first_search" title="Breadth-first search">BFS</a></li>
+<li><a href="/wiki/British_Museum_algorithm" title="British Museum algorithm">British Museum</a></li>
+<li><a href="/wiki/D*" title="D*">D*</a></li>
+<li><a href="/wiki/Depth-first_search" title="Depth-first search">DFS</a></li>
+<li><a class="mw-selflink selflink">Dijkstra</a></li>
+<li><a href="/wiki/Edmonds%27_algorithm" title="Edmonds' algorithm">Edmonds</a></li>
+<li><a href="/wiki/Floyd%E2%80%93Warshall_algorithm" title="Floyd–Warshall algorithm">Floyd–Warshall</a></li>
+<li><a href="/wiki/Fringe_search" title="Fringe search">Fringe search</a></li>
+<li><a href="/wiki/Hill_climbing" title="Hill climbing">Hill climbing</a></li>
+<li><a href="/wiki/Iterative_deepening_A*" title="Iterative deepening A*">IDA*</a></li>
+<li><a href="/wiki/Iterative_deepening_depth-first_search" title="Iterative deepening depth-first search">Iterative deepening</a></li>
+<li><a href="/wiki/Johnson%27s_algorithm" title="Johnson's algorithm">Johnson</a></li>
+<li><a href="/wiki/Jump_point_search" title="Jump point search">Jump point</a></li>
+<li><a href="/wiki/Kruskal%27s_algorithm" title="Kruskal's algorithm">Kruskal</a></li>
+<li><a href="/wiki/Lexicographic_breadth-first_search" title="Lexicographic breadth-first search">Lexicographic BFS</a></li>
+<li><a href="/wiki/Prim%27s_algorithm" title="Prim's algorithm">Prim</a></li>
+<li><a href="/wiki/SMA*" title="SMA*">SMA*</a></li>
+</ul>
+</td>
+</tr>
+<tr>
+<th style="padding:0.1em">Listings</th>
+</tr>
+<tr>
+<td style="padding:0 0.1em 0.4em">
+<ul>
+<li><i><a href="/wiki/Category:Graph_algorithms" title="Category:Graph algorithms">Graph algorithms</a></i></li>
+<li><i><a href="/wiki/Category:Search_algorithms" title="Category:Search algorithms">Search algorithms</a></i></li>
+<li><i><a href="/wiki/List_of_algorithms#Graph_algorithms" title="List of algorithms">List of graph algorithms</a></i></li>
+</ul>
+</td>
+</tr>
+<tr>
+<th style="padding:0.1em">Related topics</th>
+</tr>
+<tr>
+<td style="padding:0 0.1em 0.4em">
+<ul>
+<li><a href="/wiki/Dynamic_programming" title="Dynamic programming">Dynamic programming</a></li>
+<li><a href="/wiki/Graph_traversal" title="Graph traversal">Graph traversal</a></li>
+<li><a href="/wiki/Tree_traversal" title="Tree traversal">Tree traversal</a></li>
+<li><a href="/wiki/Search_game" title="Search game">Search games</a></li>
+</ul>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;font-size:115%">
+<div class="plainlinks hlist navbar mini">
+<ul>
+<li class="nv-view"><a href="/wiki/Template:Graph_search_algorithm" title="Template:Graph search algorithm"><abbr title="View this template">v</abbr></a></li>
+<li class="nv-talk"><a href="/wiki/Template_talk:Graph_search_algorithm" title="Template talk:Graph search algorithm"><abbr title="Discuss this template">t</abbr></a></li>
+<li class="nv-edit"><a class="external text" href="//en.wikipedia.org/w/index.php?title=Template:Graph_search_algorithm&amp;action=edit"><abbr title="Edit this template">e</abbr></a></li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+<p><b>Dijkstra's algorithm</b> is an <a href="/wiki/Algorithm" title="Algorithm">algorithm</a> for finding the <a href="/wiki/Shortest_path_problem" title="Shortest path problem">shortest paths</a> between <a href="/wiki/Vertex_(graph_theory)" title="Vertex (graph theory)">nodes</a> in a <a href="/wiki/Graph_(abstract_data_type)" title="Graph (abstract data type)">graph</a>, which may represent, for example, road networks. It was conceived by <a href="/wiki/Computer_scientist" title="Computer scientist">computer scientist</a> <a href="/wiki/Edsger_W._Dijkstra" title="Edsger W. Dijkstra">Edsger W. Dijkstra</a> in 1956 and published three years later.<sup id="cite_ref-1" class="reference"><a href="#cite_note-1">[1]</a></sup><sup id="cite_ref-Dijkstra_Interview_2-0" class="reference"><a href="#cite_note-Dijkstra_Interview-2">[2]</a></sup><sup id="cite_ref-Dijkstra1959_3-0" class="reference"><a href="#cite_note-Dijkstra1959-3">[3]</a></sup></p>
+<p>The algorithm exists in many variants; Dijkstra's original variant found the shortest path between two nodes,<sup id="cite_ref-Dijkstra1959_3-1" class="reference"><a href="#cite_note-Dijkstra1959-3">[3]</a></sup> but a more common variant fixes a single node as the "source" node and finds shortest paths from the source to all other nodes in the graph, producing a <a href="/wiki/Shortest-path_tree" title="Shortest-path tree">shortest-path tree</a>.</p>
+<p>For a given source node in the graph, the algorithm finds the shortest path between that node and every other.<sup id="cite_ref-mehlhorn_4-0" class="reference"><a href="#cite_note-mehlhorn-4">[4]</a></sup><sup class="reference" style="white-space:nowrap;">:196–206</sup> It can also be used for finding the shortest paths from a single node to a single destination node by stopping the algorithm once the shortest path to the destination node has been determined. For example, if the nodes of the graph represent cities and edge path costs represent driving distances between pairs of cities connected by a direct road, Dijkstra's algorithm can be used to find the shortest route between one city and all other cities. As a result, the shortest path algorithm is widely used in network <a href="/wiki/Routing_protocol" title="Routing protocol">routing protocols</a>, most notably <a href="/wiki/IS-IS" title="IS-IS">IS-IS</a> (Intermediate System to Intermediate System) and Open Shortest Path First (<a href="/wiki/OSPF" class="mw-redirect" title="OSPF">OSPF</a>). It is also employed as a <a href="/wiki/Subroutine" title="Subroutine">subroutine</a> in other algorithms such as <a href="/wiki/Johnson%27s_algorithm" title="Johnson's algorithm">Johnson's</a>.</p>
+<p>Dijkstra's original algorithm does not use a <a href="/wiki/Min-priority_queue" class="mw-redirect" title="Min-priority queue">min-priority queue</a> and runs in <a href="/wiki/Time_complexity" title="Time complexity">time</a> <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>O</mi>
+        <mo stretchy="false">(</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <msup>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mo stretchy="false">|</mo>
+          </mrow>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mn>2</mn>
+          </mrow>
+        </msup>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle O(|V|^{2})}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/e1e99764e23be92b694aef042c6460ff921357e3" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:7.788ex; height:3.343ex;" alt="O(|V|^{2})" /></span> (where <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle |V|}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/9ddcffc28643ac01a14dd0fb32c3157859e365a7" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:3.112ex; height:2.843ex;" alt="|V|" /></span> is the number of nodes). The idea of this algorithm is also given in <a href="#CITEREFLeyzorekGrayJohnsonLadew1957">Leyzorek et al. 1957</a>. The implementation based on a min-priority queue implemented by a <a href="/wiki/Fibonacci_heap" title="Fibonacci heap">Fibonacci heap</a> and running in <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>O</mi>
+        <mo stretchy="false">(</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>E</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo>+</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>log</mi>
+        <mo>&#x2061;<!-- ⁡ --></mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle O(|E|+|V|\log |V|)}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/4fcb7644781d08e9e958d4a430a3107da04bf1b3" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:19.567ex; height:2.843ex;" alt="O(|E|+|V|\log |V|)" /></span> (where <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>E</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle |E|}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/d8c2b9637808cf805d411190b4ae017dbd4ef8d8" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:3.101ex; height:2.843ex;" alt="|E|" /></span> is the number of edges) is due to <a href="#CITEREFFredmanTarjan1984">Fredman &amp; Tarjan 1984</a>. This is <a href="/wiki/Asymptotic_computational_complexity" title="Asymptotic computational complexity">asymptotically</a> the fastest known single-source <a href="/wiki/Shortest_path_problem" title="Shortest path problem">shortest-path algorithm</a> for arbitrary <a href="/wiki/Directed_graph" title="Directed graph">directed graphs</a> with unbounded non-negative weights. However, specialized cases (such as bounded/integer weights, directed acyclic graphs etc.) can indeed be improved further as detailed in <a href="#Specialized_variants">§&#160;Specialized variants</a>.</p>
+<p>In some fields, <a href="/wiki/Artificial_intelligence" title="Artificial intelligence">artificial intelligence</a> in particular, Dijkstra's algorithm or a variant of it is known as <b>uninformed-search</b> and formulated as an instance of the more general idea of <a href="/wiki/Best-first_search" title="Best-first search">best-first search</a>.<sup id="cite_ref-felner_5-0" class="reference"><a href="#cite_note-felner-5">[5]</a></sup></p>
+<p></p>
+<div id="toc" class="toc">
+<div class="toctitle">
+<h2>Contents</h2>
+</div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#History"><span class="tocnumber">1</span> <span class="toctext">History</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Algorithm"><span class="tocnumber">2</span> <span class="toctext">Algorithm</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Description"><span class="tocnumber">3</span> <span class="toctext">Description</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Pseudocode"><span class="tocnumber">4</span> <span class="toctext">Pseudocode</span></a>
+<ul>
+<li class="toclevel-2 tocsection-5"><a href="#Using_a_priority_queue"><span class="tocnumber">4.1</span> <span class="toctext">Using a priority queue</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-6"><a href="#Proof_of_correctness"><span class="tocnumber">5</span> <span class="toctext">Proof of correctness</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Running_time"><span class="tocnumber">6</span> <span class="toctext">Running time</span></a>
+<ul>
+<li class="toclevel-2 tocsection-8"><a href="#Practical_optimizations_and_infinite_graphs"><span class="tocnumber">6.1</span> <span class="toctext">Practical optimizations and infinite graphs</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#Specialized_variants"><span class="tocnumber">6.2</span> <span class="toctext">Specialized variants</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-10"><a href="#Related_problems_and_algorithms"><span class="tocnumber">7</span> <span class="toctext">Related problems and algorithms</span></a>
+<ul>
+<li class="toclevel-2 tocsection-11"><a href="#Dynamic_programming_perspective"><span class="tocnumber">7.1</span> <span class="toctext">Dynamic programming perspective</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-12"><a href="#See_also"><span class="tocnumber">8</span> <span class="toctext">See also</span></a></li>
+<li class="toclevel-1 tocsection-13"><a href="#Notes"><span class="tocnumber">9</span> <span class="toctext">Notes</span></a></li>
+<li class="toclevel-1 tocsection-14"><a href="#References"><span class="tocnumber">10</span> <span class="toctext">References</span></a></li>
+<li class="toclevel-1 tocsection-15"><a href="#External_links"><span class="tocnumber">11</span> <span class="toctext">External links</span></a></li>
+</ul>
+</div>
+<p></p>
+<h2><span class="mw-headline" id="History">History</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Dijkstra%27s_algorithm&amp;action=edit&amp;section=1" title="Edit section: History">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>Dijkstra thought about the shortest path problem when working at the Mathematical Center in Amsterdam in 1956 as a programmer to demonstrate the capabilities of a new computer called ARMAC.<sup id="cite_ref-6" class="reference"><a href="#cite_note-6">[6]</a></sup> His objective was to choose both a problem as well as an answer (that would be produced by computer) that non-computing people could understand. He designed the shortest path algorithm and later implemented it for ARMAC for a slightly simplified transportation map of 64 cities in the Netherlands (64, so that 6 bits would be sufficient to encode the city number).<sup id="cite_ref-Dijkstra_Interview_2-1" class="reference"><a href="#cite_note-Dijkstra_Interview-2">[2]</a></sup> A year later, he came across another problem from hardware engineers working on the institute's next computer: minimize the amount of wire needed to connect the pins on the back panel of the machine. As a solution, he re-discovered the algorithm known as <a href="/wiki/Prim%27s_algorithm" title="Prim's algorithm">Prim's minimal spanning tree algorithm</a> (known earlier to <a href="/wiki/Vojt%C4%9Bch_Jarn%C3%ADk" title="Vojtěch Jarník">Jarník</a>, and also rediscovered by Prim).<sup id="cite_ref-EWD841a_7-0" class="reference"><a href="#cite_note-EWD841a-7">[7]</a></sup><sup id="cite_ref-8" class="reference"><a href="#cite_note-8">[8]</a></sup> Dijkstra published the algorithm in 1959, two years after Prim and 29 years after Jarník.<sup id="cite_ref-9" class="reference"><a href="#cite_note-9">[9]</a></sup><sup id="cite_ref-10" class="reference"><a href="#cite_note-10">[10]</a></sup></p>
+<h2><span class="mw-headline" id="Algorithm">Algorithm</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Dijkstra%27s_algorithm&amp;action=edit&amp;section=2" title="Edit section: Algorithm">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<div class="thumb tright">
+<div class="thumbinner" style="width:212px;"><a href="/wiki/File:Dijkstras_progress_animation.gif" class="image"><img alt="" src="//upload.wikimedia.org/wikipedia/commons/2/23/Dijkstras_progress_animation.gif" width="210" height="210" class="thumbimage" data-file-width="210" data-file-height="210" /></a>
+<div class="thumbcaption">
+<div class="magnify"><a href="/wiki/File:Dijkstras_progress_animation.gif" class="internal" title="Enlarge"></a></div>
+Illustration of Dijkstra's algorithm finding a path from a start node (lower left, red) to a goal node (upper right, green) in a <a href="/wiki/Robotics" title="Robotics">robot</a> <a href="/wiki/Motion_planning" title="Motion planning">motion planning</a> problem. Open nodes represent the "tentative" set (aka set of "unvisited" nodes). Filled nodes are visited ones, with color representing the distance: the greener, the farther. Nodes in all the different directions are explored uniformly, appearing more-or-less as a circular <a href="/wiki/Wavefront" title="Wavefront">wavefront</a> as Dijkstra's algorithm uses a <a href="/wiki/Consistent_heuristic" title="Consistent heuristic">heuristic</a> identically equal to 0.</div>
+</div>
+</div>
+<p>Let the node at which we are starting be called the <b>initial node</b>. Let the <b>distance of node <i>Y</i></b> be the distance from the <b>initial node</b> to <i>Y</i>. Dijkstra's algorithm will assign some initial distance values and will try to improve them step by step.</p>
+<ol>
+<li>Assign to every node a tentative distance value: set it to zero for our initial node and to infinity for all other nodes.</li>
+<li>Set the initial node as current. Mark all other nodes unvisited. Create a set of all the unvisited nodes called the <i>unvisited set</i>.</li>
+<li>For the current node, consider all of its neighbors and calculate their <i>tentative</i> distances. Compare the newly calculated <i>tentative</i> distance to the current assigned value and assign the smaller one. For example, if the current node <i>A</i> is marked with a distance of 6, and the edge connecting it with a neighbor <i>B</i> has length 2, then the distance to <i>B</i> (through <i>A</i>) will be 6 + 2 = 8. If B was previously marked with a distance greater than 8 then change it to 8. Otherwise, keep the current value.</li>
+<li>When we are done considering all of the neighbors of the current node, mark the current node as visited and remove it from the <i>unvisited set</i>. A visited node will never be checked again.</li>
+<li>If the destination node has been marked visited (when planning a route between two specific nodes) or if the smallest tentative distance among the nodes in the <i>unvisited set</i> is infinity (when planning a complete traversal; occurs when there is no connection between the initial node and remaining unvisited nodes), then stop. The algorithm has finished.</li>
+<li>Otherwise, select the unvisited node that is marked with the smallest tentative distance, set it as the new "current node", and go back to step 3.</li>
+</ol>
+<h2><span class="mw-headline" id="Description">Description</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Dijkstra%27s_algorithm&amp;action=edit&amp;section=3" title="Edit section: Description">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<dl>
+<dd><i><b>Note:</b> For ease of understanding, this discussion uses the terms <b>intersection</b>, <b>road</b> and <b>map</b> — however, in formal terminology these terms are <b>vertex</b>, <b>edge</b> and <b>graph</b>, respectively.</i></dd>
+</dl>
+<p>Suppose you would like to find the <i>shortest path</i> between two <a href="/wiki/Intersection_(road)" title="Intersection (road)">intersections</a> on a city map: a <i>starting point</i> and a <i>destination</i>. Dijkstra's algorithm initially marks the distance (from the starting point) to every other intersection on the map with <i>infinity</i>. This is done not to imply there is an infinite distance, but to note that those intersections have not yet been visited; some variants of this method simply leave the intersections' distances <i>unlabeled</i>. Now, at each iteration, select the <i>current intersection</i>. For the first iteration, the current intersection will be the starting point, and the distance to it (the intersection's label) will be <i>zero</i>. For subsequent iterations (after the first), the current intersection will be a <i>closest unvisited intersection</i> to the starting point (this will be easy to find).</p>
+<p>From the current intersection, <i>update</i> the distance to every unvisited intersection that is directly connected to it. This is done by determining the <i>sum</i> of the distance between an unvisited intersection and the value of the current intersection, and <a href="/wiki/Graph_labeling" title="Graph labeling">relabeling</a> the unvisited intersection with this value (the sum), if it is less than its current value. In effect, the intersection is relabeled if the path to it through the current intersection is shorter than the previously known paths. To facilitate shortest path identification, in pencil, mark the road with an arrow pointing to the relabeled intersection if you label/relabel it, and erase all others pointing to it. After you have updated the distances to each <a href="/wiki/Neighbourhood_(graph_theory)" title="Neighbourhood (graph theory)">neighboring intersection</a>, mark the current intersection as <i>visited</i>, and select an unvisited intersection with minimal distance (from the starting point) – or the lowest label—as the current intersection. Nodes marked as visited are labeled with the shortest path from the starting point to it and will not be revisited or returned to.</p>
+<p>Continue this process of updating the neighboring intersections with the shortest distances, then marking the current intersection as visited and moving onto a closest unvisited intersection until you have marked the destination as visited. Once you have marked the destination as visited (as is the case with any visited intersection) you have determined the shortest path to it, from the starting point, and can <i>trace your way back, following the arrows in reverse</i>; in the algorithm's implementations, this is usually done (after the algorithm has reached the destination node) by following the nodes' parents from the destination node up to the starting node; that's why we also keep track of each node's parent.</p>
+<p>This algorithm makes no attempt to direct "exploration" towards the destination as one might expect. Rather, the sole consideration in determining the next "current" intersection is its distance from the starting point. This algorithm therefore expands outward from the starting point, interactively considering every node that is closer in terms of shortest path distance until it reaches the destination. When understood in this way, it is clear how the algorithm necessarily finds the shortest path. However, it may also reveal one of the algorithm's weaknesses: its relative slowness in some topologies.</p>
+<h2><span class="mw-headline" id="Pseudocode">Pseudocode</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Dijkstra%27s_algorithm&amp;action=edit&amp;section=4" title="Edit section: Pseudocode">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>In the following algorithm, the code <span style="font-family: monospace, monospace;">u ← vertex in <i>Q</i> with min dist[u]</span>, searches for the vertex <span style="font-family: monospace, monospace;"><var>u</var></span> in the vertex set <span style="font-family: monospace, monospace;"><var>Q</var></span> that has the least <span style="font-family: monospace, monospace;">dist[<var>u</var>]</span> value. <span style="font-family: monospace, monospace;">length(<var>u</var>, <var>v</var>)</span> returns the length of the edge joining (i.e. the distance between) the two neighbor-nodes <span style="font-family: monospace, monospace;"><var>u</var></span> and <span style="font-family: monospace, monospace;"><var>v</var></span>. The variable <span style="font-family: monospace, monospace;"><var>alt</var></span> on line 17 is the length of the path from the root node to the neighbor node <span style="font-family: monospace, monospace;"><var>v</var></span> if it were to go through <span style="font-family: monospace, monospace;"><var>u</var></span>. If this path is shorter than the current shortest path recorded for <span style="font-family: monospace, monospace;"><var>v</var></span>, that current path is replaced with this <span style="font-family: monospace, monospace;"><var>alt</var></span> path. The <span style="font-family: monospace, monospace;">prev</span> array is populated with a pointer to the "next-hop" node on the source graph to get the shortest route to the source.</p>
+<div class="thumb tright">
+<div class="thumbinner" style="width:222px;"><a href="/wiki/File:DijkstraDemo.gif" class="image"><img alt="" src="//upload.wikimedia.org/wikipedia/commons/thumb/e/e4/DijkstraDemo.gif/220px-DijkstraDemo.gif" width="220" height="219" class="thumbimage" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/e/e4/DijkstraDemo.gif/330px-DijkstraDemo.gif 1.5x, //upload.wikimedia.org/wikipedia/commons/thumb/e/e4/DijkstraDemo.gif/440px-DijkstraDemo.gif 2x" data-file-width="521" data-file-height="518" /></a>
+<div class="thumbcaption">
+<div class="magnify"><a href="/wiki/File:DijkstraDemo.gif" class="internal" title="Enlarge"></a></div>
+A demo of Dijkstra's algorithm based on Euclidean distance. Red lines are the shortest path covering, i.e., connecting <i>u</i> and prev[<i>u</i>]. Blue lines indicate where relaxing happens, i.e., connecting <i>v</i> with a node <i>u</i> in <i>Q</i>, which gives a shorter path from the source to <i>v</i>.</div>
+</div>
+</div>
+<pre>
+ 1  <b>function</b> Dijkstra(<i>Graph</i>, <i>source</i>):
+ 2
+ 3      create vertex set Q
+ 4
+ 5      <b>for each</b> vertex <i>v</i> in <i>Graph</i>:             <i>// Initialization</i>
+ 6          dist[<i>v</i>] ← INFINITY                  <i>// Unknown distance from source to v</i>
+ 7          prev[<i>v</i>] ← UNDEFINED                 <i>// Previous node in optimal path from source</i>
+ 8          add <i>v</i> to <i>Q</i>                          <i>// All nodes initially in Q (unvisited nodes)</i>
+ 9
+10      dist[<i>source</i>] ← 0                        <i>// Distance from source to source</i>
+11      
+12      <b>while</b> <i>Q</i> is not empty:
+13          <i>u</i> ← vertex in <i>Q</i> with min dist[u]    <i>// Node with the least distance</i>
+14                                                      <i>// will be selected first</i>
+15          remove <i>u</i> from <i>Q</i> 
+16          
+17          <b>for each</b> neighbor <i>v</i> of <i>u</i>:           <i>// where v is still in Q.</i>
+18              <i>alt</i> ← dist[<i>u</i>] + length(<i>u</i>, <i>v</i>)
+19              <b>if</b> <i>alt</i> &lt; dist[<i>v</i>]:               <i>// A shorter path to v has been found</i>
+20                  dist[<i>v</i>] ← <i>alt</i> 
+21                  prev[<i>v</i>] ← <i>u</i> 
+22
+23      <b>return</b> dist[], prev[]
+</pre>
+<p>If we are only interested in a shortest path between vertices <span style="font-family: monospace, monospace;"><var>source</var></span> and <span style="font-family: monospace, monospace;"><var>target</var></span>, we can terminate the search after line 15 if <span style="font-family: monospace, monospace;"><var>u</var> = <var>target</var></span>. Now we can read the shortest path from <span style="font-family: monospace, monospace;"><var>source</var></span> to <span style="font-family: monospace, monospace;"><var>target</var></span> by reverse iteration:</p>
+<pre>
+1  <i>S</i> ← empty sequence
+2  <i>u</i> ← <i>target</i>
+3  <b>while</b> prev[<i>u</i>] is defined:                  <i>// Construct the shortest path with a stack S</i>
+4      insert <i>u</i> at the beginning of <i>S</i>         <i>// Push the vertex onto the stack</i>
+5      <i>u</i> ← prev[<i>u</i>]                            <i>// Traverse from target to source</i>
+6  insert <i>u</i> at the beginning of <i>S</i>             <i>// Push the source onto the stack</i>
+</pre>
+<p>Now sequence <span style="font-family: monospace, monospace;"><var>S</var></span> is the list of vertices constituting one of the shortest paths from <span style="font-family: monospace, monospace;"><var>source</var></span> to <span style="font-family: monospace, monospace;"><var>target</var></span>, or the empty sequence if no path exists.</p>
+<p>A more general problem would be to find all the shortest paths between <span style="font-family: monospace, monospace;"><var>source</var></span> and <span style="font-family: monospace, monospace;"><var>target</var></span> (there might be several different ones of the same length). Then instead of storing only a single node in each entry of <span style="font-family: monospace, monospace;">prev[]</span> we would store all nodes satisfying the relaxation condition. For example, if both <span style="font-family: monospace, monospace;"><var>r</var></span> and <span style="font-family: monospace, monospace;"><var>source</var></span> connect to <span style="font-family: monospace, monospace;"><var>target</var></span> and both of them lie on different shortest paths through <span style="font-family: monospace, monospace;"><var>target</var></span> (because the edge cost is the same in both cases), then we would add both <span style="font-family: monospace, monospace;"><var>r</var></span> and <span style="font-family: monospace, monospace;"><var>source</var></span> to <span style="font-family: monospace, monospace;">prev[<var>target</var>]</span>. When the algorithm completes, <span style="font-family: monospace, monospace;">prev[]</span> data structure will actually describe a graph that is a subset of the original graph with some edges removed. Its key property will be that if the algorithm was run with some starting node, then every path from that node to any other node in the new graph will be the shortest path between those nodes in the original graph, and all paths of that length from the original graph will be present in the new graph. Then to actually find all these shortest paths between two given nodes we would use a path finding algorithm on the new graph, such as <a href="/wiki/Depth-first_search" title="Depth-first search">depth-first search</a>.</p>
+<h3><span class="mw-headline" id="Using_a_priority_queue">Using a priority queue</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Dijkstra%27s_algorithm&amp;action=edit&amp;section=5" title="Edit section: Using a priority queue">edit</a><span class="mw-editsection-bracket">]</span></span></h3>
+<p>A <a href="/wiki/Min-priority_queue" class="mw-redirect" title="Min-priority queue">min-priority queue</a> is an abstract data type that provides 3 basic operations&#160;: <span style="font-family: monospace, monospace;">add_with_priority()</span>, <span style="font-family: monospace, monospace;">decrease_priority()</span> and <span style="font-family: monospace, monospace;">extract_min()</span>. As mentioned earlier, using such a data structure can lead to faster computing times than using a basic queue. Notably, <a href="/wiki/Fibonacci_heap" title="Fibonacci heap">Fibonacci heap</a> (<a href="#CITEREFFredmanTarjan1984">Fredman &amp; Tarjan 1984</a>) or <a href="/wiki/Brodal_queue" title="Brodal queue">Brodal queue</a> offer optimal implementations for those 3 operations. As the algorithm is slightly different, we mention it here, in pseudo-code as well&#160;:</p>
+<pre>
+1  <b>function</b> Dijkstra(<i>Graph</i>, <i>source</i>):
+2      dist[<i>source</i>] ← 0                                    <i>// Initialization</i>
+3
+4      create vertex set Q
+5
+6      <b>for each</b> vertex <i>v</i> in <i>Graph</i>:           
+7          <b>if</b> <i>v</i> ≠ <i>source</i>
+8              dist[<i>v</i>] ← INFINITY                          <i>// Unknown distance from source to v</i>
+9              prev[<i>v</i>] ← UNDEFINED                         <i>// Predecessor of v</i>
+10
+11         <i>Q</i>.add_with_priority(<i>v</i>, dist[<i>v</i>])
+12
+13
+14     <b>while</b> <i>Q</i> is not empty:                              <i>// The main loop</i>
+15         <i>u</i> ← <i>Q</i>.extract_min()                            <i>// Remove and return best vertex</i>
+16         <b>for each</b> neighbor <i>v</i> of <i>u</i>:                      <i>// only v that is still in Q</i>
+17             <i>alt</i> ← dist[<i>u</i>] + length(<i>u</i>, <i>v</i>) 
+18             <b>if</b> <i>alt</i> &lt; dist[<i>v</i>]
+19                 dist[<i>v</i>] ← <i>alt</i>
+20                 prev[<i>v</i>] ← <i>u</i>
+21                 <i>Q</i>.decrease_priority(<i>v</i>, <i>alt</i>)
+22
+23     <b>return</b> dist[], prev[]
+</pre>
+<p>Instead of filling the priority queue with all nodes in the initialization phase, it is also possible to initialize it to contain only <i>source</i>; then, inside the <span style="font-family: monospace, monospace;"><b>if</b> <i>alt</i> &lt; dist[<i>v</i>]</span> block, the node must be inserted if not already in the queue (instead of performing a <var>decrease_priority</var> operation).<sup id="cite_ref-mehlhorn_4-1" class="reference"><a href="#cite_note-mehlhorn-4">[4]</a></sup><sup class="reference" style="white-space:nowrap;">:198</sup></p>
+<p>Other data structures can be used to achieve even faster computing times in practice.<sup id="cite_ref-chen_07_11-0" class="reference"><a href="#cite_note-chen_07-11">[11]</a></sup></p>
+<h2><span class="mw-headline" id="Proof_of_correctness">Proof of correctness</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Dijkstra%27s_algorithm&amp;action=edit&amp;section=6" title="Edit section: Proof of correctness">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p><i>Proof of Dijkstra's algorithm is constructed by induction on the number of visited nodes.</i></p>
+<p><i>Invariant hypothesis</i>: For each visited node <span style="font-family: monospace, monospace;">v</span>, <span style="font-family: monospace, monospace;">dist[v]</span> is considered the shortest distance from <span style="font-family: monospace, monospace;">source</span> to <span style="font-family: monospace, monospace;">v</span>; and for each unvisited node <span style="font-family: monospace, monospace;">u</span>, <span style="font-family: monospace, monospace;">dist[u]</span> is assumed the shortest distance when traveling via visited nodes only, from <span style="font-family: monospace, monospace;">source</span> to <span style="font-family: monospace, monospace;">u</span>. This assumption is only considered if a path exists, otherwise the distance is set to infinity. (Note&#160;: we do not assume <span style="font-family: monospace, monospace;">dist[u]</span> is the actual shortest distance for unvisited nodes)</p>
+<p>The base case is when there is just one visited node, namely the initial node <span style="font-family: monospace, monospace;">source</span>, in which case the hypothesis is <a href="/wiki/Triviality_(mathematics)" title="Triviality (mathematics)">trivial</a>.</p>
+<p>Otherwise, assume the hypothesis for <i>n-1</i> visited nodes. In which case, we choose an edge <span style="font-family: monospace, monospace;">vu</span> where <span style="font-family: monospace, monospace;">u</span> has the least <span style="font-family: monospace, monospace;">dist[u]</span> of any unvisited nodes and the edges <span style="font-family: monospace, monospace;">vu</span> is such that <span style="font-family: monospace, monospace;">dist[u] = dist[v] + length[v,u]</span>. <span style="font-family: monospace, monospace;">dist[u]</span> is considered to be the shortest distance from <span style="font-family: monospace, monospace;">source</span> to <span style="font-family: monospace, monospace;">u</span> because if there were a shorter path, and if <span style="font-family: monospace, monospace;">w</span> was the first unvisited node on that path then by the original hypothesis <span style="font-family: monospace, monospace;">dist[w]</span> &gt; <span style="font-family: monospace, monospace;">dist[u]</span> which creates a contradiction. Similarly if there was a shorter path to <span style="font-family: monospace, monospace;">u</span> without using unvisited nodes, and if the last but one node on that path were <span style="font-family: monospace, monospace;">w</span>, then we would have had <span style="font-family: monospace, monospace;">dist[u] = dist[w] + length[w,u]</span>, also a contradiction.</p>
+<p>After processing <span style="font-family: monospace, monospace;">u</span> it will still be true that for each unvisited nodes <span style="font-family: monospace, monospace;">w</span>, <span style="font-family: monospace, monospace;">dist[w]</span> will be the shortest distance from <span style="font-family: monospace, monospace;">source</span> to <span style="font-family: monospace, monospace;">w</span> using visited nodes only, because if there were a shorter path that doesn't go by <span style="font-family: monospace, monospace;">u</span> we would have found it previously, and if there were a shorter path using <span style="font-family: monospace, monospace;">u</span> we would have updated it when processing <span style="font-family: monospace, monospace;">u</span>.</p>
+<h2><span class="mw-headline" id="Running_time">Running time</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Dijkstra%27s_algorithm&amp;action=edit&amp;section=7" title="Edit section: Running time">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>Bounds of the running time of Dijkstra's algorithm on a graph with edges <span class="texhtml mvar" style="font-style:italic;">E</span> and vertices <span class="texhtml mvar" style="font-style:italic;">V</span> can be expressed as a function of the number of edges, denoted <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>E</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle |E|}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/d8c2b9637808cf805d411190b4ae017dbd4ef8d8" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:3.101ex; height:2.843ex;" alt="|E|" /></span>, and the number of vertices, denoted <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle |V|}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/9ddcffc28643ac01a14dd0fb32c3157859e365a7" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:3.112ex; height:2.843ex;" alt="|V|" /></span>, using <a href="/wiki/Big_O_notation#Graph_theory" title="Big O notation">big-O notation</a>. How tight a bound is possible depends on the way the vertex set <span class="texhtml mvar" style="font-style:italic;">Q</span> is implemented. In the following, upper bounds can be simplified because <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>E</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo>=</mo>
+        <mi>O</mi>
+        <mo stretchy="false">(</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <msup>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mo stretchy="false">|</mo>
+          </mrow>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mn>2</mn>
+          </mrow>
+        </msup>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle |E|=O(|V|^{2})}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/2721551edc09c244a2619b38791552dfe65928c0" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:13.997ex; height:3.343ex;" alt="|E|=O(|V|^{2})" /></span> for any graph, but that simplification disregards the fact that in some problems, other upper bounds on <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>E</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle |E|}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/d8c2b9637808cf805d411190b4ae017dbd4ef8d8" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:3.101ex; height:2.843ex;" alt="|E|" /></span> may hold.</p>
+<p>For any implementation of the vertex set <span class="texhtml mvar" style="font-style:italic;">Q</span>, the running time is in</p>
+<dl>
+<dd><span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>O</mi>
+        <mo stretchy="false">(</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>E</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo>&#x22C5;<!-- ⋅ --></mo>
+        <msub>
+          <mi>T</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mrow class="MJX-TeXAtom-ORD">
+              <mi mathvariant="normal">d</mi>
+              <mi mathvariant="normal">k</mi>
+            </mrow>
+          </mrow>
+        </msub>
+        <mo>+</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo>&#x22C5;<!-- ⋅ --></mo>
+        <msub>
+          <mi>T</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mrow class="MJX-TeXAtom-ORD">
+              <mi mathvariant="normal">e</mi>
+              <mi mathvariant="normal">m</mi>
+            </mrow>
+          </mrow>
+        </msub>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle O(|E|\cdot T_{\mathrm {dk} }+|V|\cdot T_{\mathrm {em} })}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/378b026d4548b51ab2b99b780f39bd868d0df66b" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:23.168ex; height:2.843ex;" alt="O(|E|\cdot T_{\mathrm {dk} }+|V|\cdot T_{\mathrm {em} })" /></span>,</dd>
+</dl>
+<p>where <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi>T</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mrow class="MJX-TeXAtom-ORD">
+              <mi mathvariant="normal">d</mi>
+              <mi mathvariant="normal">k</mi>
+            </mrow>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle T_{\mathrm {dk} }}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/9d472cd5eeba8435ca78f0662c29f549a6e68758" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.671ex; width:3.397ex; height:2.509ex;" alt="T_{\mathrm {dk} }" /></span> and <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi>T</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mrow class="MJX-TeXAtom-ORD">
+              <mi mathvariant="normal">e</mi>
+              <mi mathvariant="normal">m</mi>
+            </mrow>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle T_{\mathrm {em} }}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/10b20e61c32746a67f380a74d01eb9d672371600" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.671ex; width:3.714ex; height:2.509ex;" alt="T_{\mathrm {em} }" /></span> are the complexities of the <i>decrease-key</i> and <i>extract-minimum</i> operations in <span class="texhtml mvar" style="font-style:italic;">Q</span>, respectively. The simplest implementation of Dijkstra's algorithm stores the vertex set <span class="texhtml mvar" style="font-style:italic;">Q</span> as an ordinary linked list or array, and extract-minimum is simply a linear search through all vertices in <span class="texhtml mvar" style="font-style:italic;">Q</span>. In this case, the running time is <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>O</mi>
+        <mo stretchy="false">(</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>E</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo>+</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <msup>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mo stretchy="false">|</mo>
+          </mrow>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mn>2</mn>
+          </mrow>
+        </msup>
+        <mo stretchy="false">)</mo>
+        <mo>=</mo>
+        <mi>O</mi>
+        <mo stretchy="false">(</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <msup>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mo stretchy="false">|</mo>
+          </mrow>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mn>2</mn>
+          </mrow>
+        </msup>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle O(|E|+|V|^{2})=O(|V|^{2})}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/05857628780c54c73698e5cfa365930fa6920015" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:24.636ex; height:3.343ex;" alt="O(|E|+|V|^{2})=O(|V|^{2})" /></span>.</p>
+<p>For <a href="/wiki/Sparse_graph" class="mw-redirect" title="Sparse graph">sparse graphs</a>, that is, graphs with far fewer than <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <msup>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mo stretchy="false">|</mo>
+          </mrow>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mn>2</mn>
+          </mrow>
+        </msup>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle |V|^{2}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/3e2a7aad37527c097101c39b0b7724fe4e1cafb1" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:4.174ex; height:3.343ex;" alt="|V|^{2}" /></span> edges, Dijkstra's algorithm can be implemented more efficiently by storing the graph in the form of <a href="/wiki/Adjacency_list" title="Adjacency list">adjacency lists</a> and using a <a href="/wiki/Self-balancing_binary_search_tree" title="Self-balancing binary search tree">self-balancing binary search tree</a>, <a href="/wiki/Binary_heap" title="Binary heap">binary heap</a>, <a href="/wiki/Pairing_heap" title="Pairing heap">pairing heap</a>, or <a href="/wiki/Fibonacci_heap" title="Fibonacci heap">Fibonacci heap</a> as a <a href="/wiki/Priority_queue" title="Priority queue">priority queue</a> to implement extracting minimum efficiently. To perform decrease-key steps in a binary heap efficiently, it is necessary to use an auxiliary data structure that maps each vertex to its position in the heap, and to keep this structure up to date as the priority queue <span class="texhtml mvar" style="font-style:italic;">Q</span> changes. With a self-balancing binary search tree or binary heap, the algorithm requires</p>
+<dl>
+<dd><span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi mathvariant="normal">&#x0398;<!-- Θ --></mi>
+        <mo stretchy="false">(</mo>
+        <mo stretchy="false">(</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>E</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo>+</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo stretchy="false">)</mo>
+        <mi>log</mi>
+        <mo>&#x2061;<!-- ⁡ --></mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle \Theta ((|E|+|V|)\log |V|)}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/bb876ca772aebc634b2c4087fa81b2d7c683e71c" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:21.432ex; height:2.843ex;" alt="\Theta ((|E|+|V|)\log |V|)" /></span></dd>
+</dl>
+<p>time in the worst case (where <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>log</mi>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle \log }</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/79e4debd0ab1c6ce342d0172a7643733305c37bc" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:3.003ex; height:2.676ex;" alt="\log " /></span> denotes the binary logarithm <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <msub>
+          <mi>log</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mn>2</mn>
+          </mrow>
+        </msub>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle \log _{2}}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/c381607e0a0db64e23e9c8483369aec660f7fd8d" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:4.065ex; height:2.676ex;" alt="\log _{2}" /></span>); for connected graphs this time bound can be simplified to <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi mathvariant="normal">&#x0398;<!-- Θ --></mi>
+        <mo stretchy="false">(</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>E</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>log</mi>
+        <mo>&#x2061;<!-- ⁡ --></mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle \Theta (|E|\log |V|)}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/df01952aa6a18b33a028713dedfc2f89d84a3c81" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:13.639ex; height:2.843ex;" alt="\Theta (|E|\log |V|)" /></span>. The <a href="/wiki/Fibonacci_heap" title="Fibonacci heap">Fibonacci heap</a> improves this to</p>
+<dl>
+<dd><span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>O</mi>
+        <mo stretchy="false">(</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>E</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo>+</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>log</mi>
+        <mo>&#x2061;<!-- ⁡ --></mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle O(|E|+|V|\log |V|)}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/4fcb7644781d08e9e958d4a430a3107da04bf1b3" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:19.567ex; height:2.843ex;" alt="O(|E|+|V|\log |V|)" /></span>.</dd>
+</dl>
+<p>When using binary heaps, the <a href="/wiki/Best,_worst_and_average_case" title="Best, worst and average case">average case</a> time complexity is lower than the worst-case: assuming edge costs are drawn independently from a common <a href="/wiki/Probability_distribution" title="Probability distribution">probability distribution</a>, the expected number of <i>decrease-key</i> operations is bounded by <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>O</mi>
+        <mo stretchy="false">(</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>log</mi>
+        <mo>&#x2061;<!-- ⁡ --></mo>
+        <mo stretchy="false">(</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>E</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo>/</mo>
+        </mrow>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo stretchy="false">)</mo>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle O(|V|\log(|E|/|V|))}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/23001b44397f160b0cdafae14c4150eab1b840a4" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:19.332ex; height:2.843ex;" alt="O(|V|\log(|E|/|V|))" /></span>, giving a total running time of<sup id="cite_ref-mehlhorn_4-2" class="reference"><a href="#cite_note-mehlhorn-4">[4]</a></sup><sup class="reference" style="white-space:nowrap;">:199–200</sup></p>
+<dl>
+<dd><span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>O</mi>
+        <mrow>
+          <mo>(</mo>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mo stretchy="false">|</mo>
+          </mrow>
+          <mi>E</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mo stretchy="false">|</mo>
+          </mrow>
+          <mo>+</mo>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mo stretchy="false">|</mo>
+          </mrow>
+          <mi>V</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mo stretchy="false">|</mo>
+          </mrow>
+          <mi>log</mi>
+          <mo>&#x2061;<!-- ⁡ --></mo>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mfrac>
+              <mrow>
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mo stretchy="false">|</mo>
+                </mrow>
+                <mi>E</mi>
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mo stretchy="false">|</mo>
+                </mrow>
+              </mrow>
+              <mrow>
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mo stretchy="false">|</mo>
+                </mrow>
+                <mi>V</mi>
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mo stretchy="false">|</mo>
+                </mrow>
+              </mrow>
+            </mfrac>
+          </mrow>
+          <mi>log</mi>
+          <mo>&#x2061;<!-- ⁡ --></mo>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mo stretchy="false">|</mo>
+          </mrow>
+          <mi>V</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mo stretchy="false">|</mo>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle O\left(|E|+|V|\log {\frac {|E|}{|V|}}\log |V|\right)}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/25387c7a3419341bf1570fdc1da25d7bbe52d252" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -2.671ex; width:29.292ex; height:6.509ex;" alt="{\displaystyle O\left(|E|+|V|\log {\frac {|E|}{|V|}}\log |V|\right)}" /></span>.</dd>
+</dl>
+<h3><span class="mw-headline" id="Practical_optimizations_and_infinite_graphs">Practical optimizations and infinite graphs</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Dijkstra%27s_algorithm&amp;action=edit&amp;section=8" title="Edit section: Practical optimizations and infinite graphs">edit</a><span class="mw-editsection-bracket">]</span></span></h3>
+<p>In common presentations of Dijkstra's algorithm, initially all nodes are entered into the priority queue. This is, however, not necessary: the algorithm can start with a priority queue that contains only one item, and insert new items as they are discovered (instead of doing a decrease-key, check whether the key is in the queue; if it is, decrease its key, otherwise insert it).<sup id="cite_ref-mehlhorn_4-3" class="reference"><a href="#cite_note-mehlhorn-4">[4]</a></sup><sup class="reference" style="white-space:nowrap;">:198</sup> This variant has the same worst-case bounds as the common variant, but maintains a smaller priority queue in practice, speeding up the queue operations.<sup id="cite_ref-felner_5-1" class="reference"><a href="#cite_note-felner-5">[5]</a></sup></p>
+<p>Moreover, not inserting all nodes in a graph makes it possible to extend the algorithm to find the shortest path from a single source to the closest of a set of target nodes on infinite graphs or those too large to represent in memory. The resulting algorithm is called <i>uniform-cost search</i> (UCS) in the artificial intelligence literature<sup id="cite_ref-felner_5-2" class="reference"><a href="#cite_note-felner-5">[5]</a></sup><sup id="cite_ref-aima_12-0" class="reference"><a href="#cite_note-aima-12">[12]</a></sup><sup id="cite_ref-13" class="reference"><a href="#cite_note-13">[13]</a></sup> and can be expressed in pseudocode as</p>
+<pre>
+ <b>procedure</b> <i>UniformCostSearch</i>(Graph, start, goal)
+  node ← start
+  cost ← 0
+  frontier ← priority queue containing node only
+  explored ← empty set
+  <b>do</b>
+    <b>if</b> frontier is empty
+      <b>return</b> failure
+    node ← frontier.pop()
+    <b>if</b> node is goal
+      <b>return</b> solution
+    explored.add(node)
+    <b>for each</b> of node's neighbors n
+      <b>if</b> n is not in explored or frontier
+          frontier.add(n)
+      <b>else if</b> n is in frontier with higher cost
+          replace existing node with n
+</pre>
+<p>The complexity of this algorithm can be expressed in an alternative way for very large graphs: when <span class="texhtml"><i>C</i><sup>*</sup></span> is the length of the shortest path from the start node to any node satisfying the "goal" predicate, each edge has cost at least <span class="texhtml mvar" style="font-style:italic;">ε</span>, and the number of neighbors per node is bounded by <span class="texhtml mvar" style="font-style:italic;">b</span>, then the algorithm's worst-case time and space complexity are both in <span class="texhtml"><i>O</i>(<i>b</i><sup>1+⌊<i>C</i><sup>*</sup> <span class="nowrap"> </span><span class="frac nowrap">⁄</span> <i>ε</i>⌋</sup>)</span>.<sup id="cite_ref-aima_12-1" class="reference"><a href="#cite_note-aima-12">[12]</a></sup></p>
+<p>Further optimizations of Dijkstra's algorithm for the single-target case include <a href="/wiki/Bidirectional_search" title="Bidirectional search">bidirectional</a> variants, goal-directed variants such as the <a href="/wiki/A*_algorithm" class="mw-redirect" title="A* algorithm">A* algorithm</a> (see <a href="#Related_problems_and_algorithms">§&#160;Related problems and algorithms</a>), graph pruning to determine which nodes are likely to form the middle segment of shortest paths (reach-based routing), and hierarchical decompositions of the input graph that reduce <span class="texhtml"><i>s</i>–<i>t</i></span> routing to connecting <span class="texhtml mvar" style="font-style:italic;">s</span> and <span class="texhtml mvar" style="font-style:italic;">t</span> to their respective "transit nodes" followed by shortest-path computation between these transit nodes using a "highway".<sup id="cite_ref-speedup_14-0" class="reference"><a href="#cite_note-speedup-14">[14]</a></sup> Combinations of such techniques may be needed for optimal practical performance on specific problems.<sup id="cite_ref-15" class="reference"><a href="#cite_note-15">[15]</a></sup></p>
+<p><span id="specialized_variants"></span></p>
+<h3><span id="specialized_variants"><span class="mw-headline" id="Specialized_variants">Specialized variants</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Dijkstra%27s_algorithm&amp;action=edit&amp;section=9" title="Edit section: Specialized variants">edit</a><span class="mw-editsection-bracket">]</span></span></span></h3>
+<p>When arc weights are small integers (bounded by a parameter <i>C</i>), a <a href="/wiki/Monotone_priority_queue" title="Monotone priority queue">monotone priority queue</a> can be used to speed up Dijkstra's algorithm. The first algorithm of this type was <b>Dial's algorithm</b>, which used a <a href="/wiki/Bucket_queue" title="Bucket queue">bucket queue</a> to obtain a running time <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>O</mi>
+        <mo stretchy="false">(</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>E</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo>+</mo>
+        <mi>diam</mi>
+        <mo>&#x2061;<!-- ⁡ --></mo>
+        <mo stretchy="false">(</mo>
+        <mi>G</mi>
+        <mo stretchy="false">)</mo>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle O(|E|+\operatorname {diam} (G))}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/cd5defc915d1da2982baf5699cfb862d2ed779ff" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:18.312ex; height:2.843ex;" alt="{\displaystyle O(|E|+\operatorname {diam} (G))}" /></span> that depends on the weighted <a href="/wiki/Distance_(graph_theory)" title="Distance (graph theory)">diameter</a> of a graph with integer edge weights (<a href="#CITEREFDial1969">Dial 1969</a>). The use of a <a href="/wiki/Van_Emde_Boas_tree" title="Van Emde Boas tree">Van Emde Boas tree</a> as the priority queue brings the complexity to <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>O</mi>
+        <mo stretchy="false">(</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>E</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>log</mi>
+        <mo>&#x2061;<!-- ⁡ --></mo>
+        <mi>log</mi>
+        <mo>&#x2061;<!-- ⁡ --></mo>
+        <mi>C</mi>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle O(|E|\log \log C)}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/91b4708c3877aef4a340d057ade49b65c47b870b" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:15.659ex; height:2.843ex;" alt="{\displaystyle O(|E|\log \log C)}" /></span> (<a href="#CITEREFAhujaMehlhornOrlinTarjan1990">Ahuja et al. 1990</a>). Another interesting implementation based on a combination of a new <a href="/wiki/Radix_heap" title="Radix heap">radix heap</a> and the well-known Fibonacci heap runs in time <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>O</mi>
+        <mo stretchy="false">(</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>E</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo>+</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mrow class="MJX-TeXAtom-ORD">
+          <msqrt>
+            <mi>log</mi>
+            <mo>&#x2061;<!-- ⁡ --></mo>
+            <mi>C</mi>
+          </msqrt>
+        </mrow>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle O(|E|+|V|{\sqrt {\log C}})}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/ee2a9dfd3f6ca5471b9ecf0f2255bc49f9da6a94" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -1.171ex; width:20.179ex; height:3.509ex;" alt="{\displaystyle O(|E|+|V|{\sqrt {\log C}})}" /></span> (<a href="#CITEREFAhujaMehlhornOrlinTarjan1990">Ahuja et al. 1990</a>). Finally, the best algorithms in this special case are as follows. The algorithm given by (<a href="#CITEREFThorup2000">Thorup 2000</a>) runs in <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>O</mi>
+        <mo stretchy="false">(</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>E</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>log</mi>
+        <mo>&#x2061;<!-- ⁡ --></mo>
+        <mi>log</mi>
+        <mo>&#x2061;<!-- ⁡ --></mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle O(|E|\log \log |V|)}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/6ad6d486e8b9d44ea253d43ce5d219652073eb8e" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:16.994ex; height:2.843ex;" alt="O(|E|\log \log |V|)" /></span> time and the algorithm given by (<a href="#CITEREFRaman1997">Raman 1997</a>) runs in <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>O</mi>
+        <mo stretchy="false">(</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>E</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo>+</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo movablelimits="true" form="prefix">min</mo>
+        <mo fence="false" stretchy="false">{</mo>
+        <mo stretchy="false">(</mo>
+        <mi>log</mi>
+        <mo>&#x2061;<!-- ⁡ --></mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <msup>
+          <mo stretchy="false">)</mo>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mn>1</mn>
+            <mrow class="MJX-TeXAtom-ORD">
+              <mo>/</mo>
+            </mrow>
+            <mn>3</mn>
+            <mo>+</mo>
+            <mi>&#x03F5;<!-- ϵ --></mi>
+          </mrow>
+        </msup>
+        <mo>,</mo>
+        <mo stretchy="false">(</mo>
+        <mi>log</mi>
+        <mo>&#x2061;<!-- ⁡ --></mo>
+        <mi>C</mi>
+        <msup>
+          <mo stretchy="false">)</mo>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mn>1</mn>
+            <mrow class="MJX-TeXAtom-ORD">
+              <mo>/</mo>
+            </mrow>
+            <mn>4</mn>
+            <mo>+</mo>
+            <mi>&#x03F5;<!-- ϵ --></mi>
+          </mrow>
+        </msup>
+        <mo fence="false" stretchy="false">}</mo>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle O(|E|+|V|\min\{(\log |V|)^{1/3+\epsilon },(\log C)^{1/4+\epsilon }\})}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/d2bf33f523e6ea4ad70d010350c77510ee0902c5" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:45.054ex; height:3.343ex;" alt="{\displaystyle O(|E|+|V|\min\{(\log |V|)^{1/3+\epsilon },(\log C)^{1/4+\epsilon }\})}" /></span> time.</p>
+<p>Also, for <a href="/wiki/Directed_acyclic_graph" title="Directed acyclic graph">directed acyclic graphs</a>, it is possible to find shortest paths from a given starting vertex in linear <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>O</mi>
+        <mo stretchy="false">(</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>E</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo>+</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle O(|E|+|V|)}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/065337b95c6a093f00995ffbc0bef2f8f56078f0" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:12.678ex; height:2.843ex;" alt="O(|E|+|V|)" /></span> time, by processing the vertices in a <a href="/wiki/Topological_sorting" title="Topological sorting">topological order</a>, and calculating the path length for each vertex to be the minimum length obtained via any of its incoming edges.<sup id="cite_ref-16" class="reference"><a href="#cite_note-16">[16]</a></sup><sup id="cite_ref-17" class="reference"><a href="#cite_note-17">[17]</a></sup></p>
+<p>In the special case of integer weights and undirected graphs, Dijkstra's algorithm can be completely countered with a linear <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>O</mi>
+        <mo stretchy="false">(</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>V</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo>+</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mi>E</mi>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mo stretchy="false">|</mo>
+        </mrow>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle O(|V|+|E|)}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/a7cf317fbe3965ae3164f28c1f6858696adb23f4" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:12.678ex; height:2.843ex;" alt="O(|V|+|E|)" /></span> complexity algorithm, given by (<a href="#CITEREFThorup1999">Thorup 1999</a>).</p>
+<h2><span class="mw-headline" id="Related_problems_and_algorithms">Related problems and algorithms</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Dijkstra%27s_algorithm&amp;action=edit&amp;section=10" title="Edit section: Related problems and algorithms">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>The functionality of Dijkstra's original algorithm can be extended with a variety of modifications. For example, sometimes it is desirable to present solutions which are less than mathematically optimal. To obtain a ranked list of less-than-optimal solutions, the optimal solution is first calculated. A single edge appearing in the optimal solution is removed from the graph, and the optimum solution to this new graph is calculated. Each edge of the original solution is suppressed in turn and a new shortest-path calculated. The secondary solutions are then ranked and presented after the first optimal solution.</p>
+<p>Dijkstra's algorithm is usually the working principle behind <a href="/wiki/Link-state_routing_protocol" title="Link-state routing protocol">link-state routing protocols</a>, <a href="/wiki/OSPF" class="mw-redirect" title="OSPF">OSPF</a> and <a href="/wiki/IS-IS" title="IS-IS">IS-IS</a> being the most common ones.</p>
+<p>Unlike Dijkstra's algorithm, the <a href="/wiki/Bellman%E2%80%93Ford_algorithm" title="Bellman–Ford algorithm">Bellman–Ford algorithm</a> can be used on graphs with negative edge weights, as long as the graph contains no <a href="/wiki/Negative_cycle" class="mw-redirect" title="Negative cycle">negative cycle</a> reachable from the source vertex <i>s</i>. The presence of such cycles means there is no shortest path, since the total weight becomes lower each time the cycle is traversed. It is possible to adapt Dijkstra's algorithm to handle negative weight edges by combining it with the Bellman-Ford algorithm (to remove negative edges and detect negative cycles), such an algorithm is called <a href="/wiki/Johnson%27s_algorithm" title="Johnson's algorithm">Johnson's algorithm</a>.</p>
+<p>The <a href="/wiki/A-star_algorithm" class="mw-redirect" title="A-star algorithm">A* algorithm</a> is a generalization of Dijkstra's algorithm that cuts down on the size of the subgraph that must be explored, if additional information is available that provides a lower bound on the "distance" to the target. This approach can be viewed from the perspective of <a href="/wiki/Linear_programming" title="Linear programming">linear programming</a>: there is a natural <a href="/wiki/Shortest_path_problem#Linear_programming_formulation" title="Shortest path problem">linear program for computing shortest paths</a>, and solutions to its <a href="/wiki/Dual_linear_program" class="mw-redirect" title="Dual linear program">dual linear program</a> are feasible if and only if they form a <a href="/wiki/Consistent_heuristic" title="Consistent heuristic">consistent heuristic</a> (speaking roughly, since the sign conventions differ from place to place in the literature). This feasible dual / consistent heuristic defines a non-negative <a href="/wiki/Reduced_cost" title="Reduced cost">reduced cost</a> and A* is essentially running Dijkstra's algorithm with these reduced costs. If the dual satisfies the weaker condition of <a href="/wiki/Admissible_heuristic" title="Admissible heuristic">admissibility</a>, then A* is instead more akin to the Bellman–Ford algorithm.</p>
+<p>The process that underlies Dijkstra's algorithm is similar to the <a href="/wiki/Greedy_algorithm" title="Greedy algorithm">greedy</a> process used in <a href="/wiki/Prim%27s_algorithm" title="Prim's algorithm">Prim's algorithm</a>. Prim's purpose is to find a <a href="/wiki/Minimum_spanning_tree" title="Minimum spanning tree">minimum spanning tree</a> that connects all nodes in the graph; Dijkstra is concerned with only two nodes. Prim's does not evaluate the total weight of the path from the starting node, only the individual path.</p>
+<p><a href="/wiki/Breadth-first_search" title="Breadth-first search">Breadth-first search</a> can be viewed as a special-case of Dijkstra's algorithm on unweighted graphs, where the priority queue degenerates into a FIFO queue.</p>
+<p>The <a href="/wiki/Fast_marching_method" title="Fast marching method">fast marching method</a> can be viewed as a continuous version of Dijkstra's algorithm which computes the geodesic distance on a triangle mesh.</p>
+<h3><span class="mw-headline" id="Dynamic_programming_perspective">Dynamic programming perspective</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Dijkstra%27s_algorithm&amp;action=edit&amp;section=11" title="Edit section: Dynamic programming perspective">edit</a><span class="mw-editsection-bracket">]</span></span></h3>
+<p>From a <a href="/wiki/Dynamic_programming" title="Dynamic programming">dynamic programming</a> point of view, Dijkstra's algorithm is a successive approximation scheme that solves the dynamic programming functional equation for the shortest path problem by the <b>Reaching</b> method.<sup id="cite_ref-sniedovich_06_18-0" class="reference"><a href="#cite_note-sniedovich_06-18">[18]</a></sup><sup id="cite_ref-denardo_03_19-0" class="reference"><a href="#cite_note-denardo_03-19">[19]</a></sup><sup id="cite_ref-sniedovich_10_20-0" class="reference"><a href="#cite_note-sniedovich_10-20">[20]</a></sup></p>
+<p>In fact, Dijkstra's explanation of the logic behind the algorithm,<sup id="cite_ref-21" class="reference"><a href="#cite_note-21">[21]</a></sup> namely</p>
+<blockquote class="templatequote">
+<p><b>Problem 2.</b> Find the path of minimum total length between two given nodes <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>P</mi>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle P}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/b4dc73bf40314945ff376bd363916a738548d40a" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.338ex; width:1.756ex; height:2.176ex;" alt="P" /></span> and <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>Q</mi>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle Q}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/8752c7023b4b3286800fe3238271bbca681219ed" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.671ex; width:1.849ex; height:2.509ex;" alt="Q" /></span>.</p>
+<p>We use the fact that, if <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>R</mi>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle R}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/4b0bfb3769bf24d80e15374dc37b0441e2616e33" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.338ex; width:1.774ex; height:2.176ex;" alt="R" /></span> is a node on the minimal path from <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>P</mi>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle P}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/b4dc73bf40314945ff376bd363916a738548d40a" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.338ex; width:1.756ex; height:2.176ex;" alt="P" /></span> to <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>Q</mi>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle Q}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/8752c7023b4b3286800fe3238271bbca681219ed" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.671ex; width:1.849ex; height:2.509ex;" alt="Q" /></span>, knowledge of the latter implies the knowledge of the minimal path from <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>P</mi>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle P}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/b4dc73bf40314945ff376bd363916a738548d40a" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.338ex; width:1.756ex; height:2.176ex;" alt="P" /></span> to <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>R</mi>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle R}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/4b0bfb3769bf24d80e15374dc37b0441e2616e33" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.338ex; width:1.774ex; height:2.176ex;" alt="R" /></span>.</p>
+</blockquote>
+<p>is a paraphrasing of <a href="/wiki/Richard_Bellman" class="mw-redirect" title="Richard Bellman">Bellman's</a> famous <a href="/wiki/Principle_of_Optimality" class="mw-redirect" title="Principle of Optimality">Principle of Optimality</a> in the context of the shortest path problem.</p>
+<h2><span class="mw-headline" id="See_also">See also</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Dijkstra%27s_algorithm&amp;action=edit&amp;section=12" title="Edit section: See also">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<div role="navigation" aria-label="Portals" class="noprint portal plainlist tright" style="margin:0.5em 0 0.5em 1em;border:solid #aaa 1px">
+<ul style="display:table;box-sizing:border-box;padding:0.1em;max-width:175px;background:#f9f9f9;font-size:85%;line-height:110%;font-style:italic;font-weight:bold">
+<li style="display:table-row"><span style="display:table-cell;padding:0.2em;vertical-align:middle;text-align:center"><a href="/wiki/File:Internet_map_1024.jpg" class="image"><img alt="icon" src="//upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Internet_map_1024.jpg/28px-Internet_map_1024.jpg" width="28" height="28" class="noviewer" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Internet_map_1024.jpg/42px-Internet_map_1024.jpg 1.5x, //upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Internet_map_1024.jpg/56px-Internet_map_1024.jpg 2x" data-file-width="1280" data-file-height="1280" /></a></span><span style="display:table-cell;padding:0.2em 0.2em 0.2em 0.3em;vertical-align:middle"><a href="/wiki/Portal:Computer_science" title="Portal:Computer science">Computer science portal</a></span></li>
+</ul>
+</div>
+<ul>
+<li><a href="/wiki/A*_search_algorithm" title="A* search algorithm">A* search algorithm</a></li>
+<li><a href="/wiki/Bellman%E2%80%93Ford_algorithm" title="Bellman–Ford algorithm">Bellman–Ford algorithm</a></li>
+<li><a href="/wiki/Euclidean_shortest_path" title="Euclidean shortest path">Euclidean shortest path</a></li>
+<li><a href="/wiki/Flood_fill" title="Flood fill">Flood fill</a></li>
+<li><a href="/wiki/Floyd%E2%80%93Warshall_algorithm" title="Floyd–Warshall algorithm">Floyd–Warshall algorithm</a></li>
+<li><a href="/wiki/Johnson%27s_algorithm" title="Johnson's algorithm">Johnson's algorithm</a></li>
+<li><a href="/wiki/Longest_path_problem" title="Longest path problem">Longest path problem</a></li>
+</ul>
+<h2><span class="mw-headline" id="Notes">Notes</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Dijkstra%27s_algorithm&amp;action=edit&amp;section=13" title="Edit section: Notes">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<div class="reflist" style="list-style-type: decimal;">
+<div class="mw-references-wrap mw-references-columns">
+<ol class="references">
+<li id="cite_note-1"><span class="mw-cite-backlink"><b><a href="#cite_ref-1">^</a></b></span> <span class="reference-text"><cite class="citation web">Richards, Hamilton. <a rel="nofollow" class="external text" href="http://amturing.acm.org/award_winners/dijkstra_1053701.cfm">"Edsger Wybe Dijkstra"</a>. <i>A.M. Turing Award</i>. Association for Computing Machinery<span class="reference-accessdate">. Retrieved <span class="nowrap">October 16,</span> 2017</span>. <q>At the Mathematical Centre a major project was building the ARMAC computer. For its official inauguration in 1956, Dijkstra devised a program to solve a problem interesting to a nontechnical audience: Given a network of roads connecting cities, what is the shortest route between two designated cities?</q></cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.genre=unknown&amp;rft.jtitle=A.M.+Turing+Award&amp;rft.atitle=Edsger+Wybe+Dijkstra&amp;rft.aulast=Richards&amp;rft.aufirst=Hamilton&amp;rft_id=http%3A%2F%2Famturing.acm.org%2Faward_winners%2Fdijkstra_1053701.cfm&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></span></li>
+<li id="cite_note-Dijkstra_Interview-2"><span class="mw-cite-backlink">^ <a href="#cite_ref-Dijkstra_Interview_2-0"><sup><i><b>a</b></i></sup></a> <a href="#cite_ref-Dijkstra_Interview_2-1"><sup><i><b>b</b></i></sup></a></span> <span class="reference-text"><cite class="citation journal">Frana, Phil (August 2010). "An Interview with Edsger W. Dijkstra". <i>Communications of the ACM</i>. <b>53</b> (8): 41–47. <a href="/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="//doi.org/10.1145%2F1787234.1787249">10.1145/1787234.1787249</a>. <q>What is the shortest way to travel from Rotterdam to Groningen? It is the algorithm for the shortest path which I designed in about 20 minutes. One morning I was shopping with my young fiancée, and tired, we sat down on the café terrace to drink a cup of coffee and I was just thinking about whether I could do this, and I then designed the algorithm for the shortest path.</q></cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.genre=article&amp;rft.jtitle=Communications+of+the+ACM&amp;rft.atitle=An+Interview+with+Edsger+W.+Dijkstra&amp;rft.volume=53&amp;rft.issue=8&amp;rft.pages=41-47&amp;rft.date=2010-08&amp;rft_id=info%3Adoi%2F10.1145%2F1787234.1787249&amp;rft.aulast=Frana&amp;rft.aufirst=Phil&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></span></li>
+<li id="cite_note-Dijkstra1959-3"><span class="mw-cite-backlink">^ <a href="#cite_ref-Dijkstra1959_3-0"><sup><i><b>a</b></i></sup></a> <a href="#cite_ref-Dijkstra1959_3-1"><sup><i><b>b</b></i></sup></a></span> <span class="reference-text"><cite id="CITEREFDijkstra1959" class="citation journal"><a href="/wiki/Edsger_W._Dijkstra" title="Edsger W. Dijkstra">Dijkstra, E. W.</a> (1959). <a rel="nofollow" class="external text" href="http://www-m3.ma.tum.de/twiki/pub/MN0506/WebHome/dijkstra.pdf">"A note on two problems in connexion with graphs"</a> <span style="font-size:85%;">(PDF)</span>. <i>Numerische Mathematik</i>. <b>1</b>: 269–271. <a href="/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="//doi.org/10.1007%2FBF01386390">10.1007/BF01386390</a>.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.genre=article&amp;rft.jtitle=Numerische+Mathematik&amp;rft.atitle=A+note+on+two+problems+in+connexion+with+graphs&amp;rft.volume=1&amp;rft.pages=269-271&amp;rft.date=1959&amp;rft_id=info%3Adoi%2F10.1007%2FBF01386390&amp;rft.aulast=Dijkstra&amp;rft.aufirst=E.+W.&amp;rft_id=http%3A%2F%2Fwww-m3.ma.tum.de%2Ftwiki%2Fpub%2FMN0506%2FWebHome%2Fdijkstra.pdf&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></span></li>
+<li id="cite_note-mehlhorn-4"><span class="mw-cite-backlink">^ <a href="#cite_ref-mehlhorn_4-0"><sup><i><b>a</b></i></sup></a> <a href="#cite_ref-mehlhorn_4-1"><sup><i><b>b</b></i></sup></a> <a href="#cite_ref-mehlhorn_4-2"><sup><i><b>c</b></i></sup></a> <a href="#cite_ref-mehlhorn_4-3"><sup><i><b>d</b></i></sup></a></span> <span class="reference-text"><cite class="citation book"><a href="/wiki/Kurt_Mehlhorn" title="Kurt Mehlhorn">Mehlhorn, Kurt</a>; <a href="/wiki/Peter_Sanders_(computer_scientist)" title="Peter Sanders (computer scientist)">Sanders, Peter</a> (2008). <a rel="nofollow" class="external text" href="http://people.mpi-inf.mpg.de/~mehlhorn/ftp/Toolbox/ShortestPaths.pdf">"Chapter 10. Shortest Paths"</a> <span style="font-size:85%;">(PDF)</span>. <i>Algorithms and Data Structures: The Basic Toolbox</i>. Springer. <a href="/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="//doi.org/10.1007%2F978-3-540-77978-0">10.1007/978-3-540-77978-0</a>. <a href="/wiki/International_Standard_Book_Number" title="International Standard Book Number">ISBN</a>&#160;<a href="/wiki/Special:BookSources/978-3-540-77977-3" title="Special:BookSources/978-3-540-77977-3">978-3-540-77977-3</a>.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&amp;rft.genre=bookitem&amp;rft.atitle=Chapter+10.+Shortest+Paths&amp;rft.btitle=Algorithms+and+Data+Structures%3A+The+Basic+Toolbox&amp;rft.pub=Springer&amp;rft.date=2008&amp;rft_id=info%3Adoi%2F10.1007%2F978-3-540-77978-0&amp;rft.isbn=978-3-540-77977-3&amp;rft.aulast=Mehlhorn&amp;rft.aufirst=Kurt&amp;rft.au=Sanders%2C+Peter&amp;rft_id=http%3A%2F%2Fpeople.mpi-inf.mpg.de%2F~mehlhorn%2Fftp%2FToolbox%2FShortestPaths.pdf&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></span></li>
+<li id="cite_note-felner-5"><span class="mw-cite-backlink">^ <a href="#cite_ref-felner_5-0"><sup><i><b>a</b></i></sup></a> <a href="#cite_ref-felner_5-1"><sup><i><b>b</b></i></sup></a> <a href="#cite_ref-felner_5-2"><sup><i><b>c</b></i></sup></a></span> <span class="reference-text"><cite class="citation conference">Felner, Ariel (2011). <a rel="nofollow" class="external text" href="http://www.aaai.org/ocs/index.php/SOCS/SOCS11/paper/view/4017/4357"><i>Position Paper: Dijkstra's Algorithm versus Uniform Cost Search or a Case Against Dijkstra's Algorithm</i></a>. Proc. 4th Int'l Symp. on Combinatorial Search.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&amp;rft.genre=conference&amp;rft.btitle=Position+Paper%3A+Dijkstra%27s+Algorithm+versus+Uniform+Cost+Search+or+a+Case+Against+Dijkstra%27s+Algorithm&amp;rft.date=2011&amp;rft.aulast=Felner&amp;rft.aufirst=Ariel&amp;rft_id=http%3A%2F%2Fwww.aaai.org%2Focs%2Findex.php%2FSOCS%2FSOCS11%2Fpaper%2Fview%2F4017%2F4357&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span> In a route-finding problem, Felner finds that the queue can be a factor 500–600 smaller, taking some 40% of the running time.</span></li>
+<li id="cite_note-6"><span class="mw-cite-backlink"><b><a href="#cite_ref-6">^</a></b></span> <span class="reference-text"><cite class="citation web"><a rel="nofollow" class="external text" href="https://web.archive.org/web/20131113021126/http://www-set.win.tue.nl/UnsungHeroes/machines/armac.html">"ARMAC"</a>. <i>Unsung Heroes in Dutch Computing History</i>. 2007. Archived from <a rel="nofollow" class="external text" href="http://www-set.win.tue.nl/UnsungHeroes/machines/armac.html">the original</a> on 13 November 2013.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.genre=unknown&amp;rft.jtitle=Unsung+Heroes+in+Dutch+Computing+History&amp;rft.atitle=ARMAC&amp;rft.date=2007&amp;rft_id=http%3A%2F%2Fwww-set.win.tue.nl%2FUnsungHeroes%2Fmachines%2Farmac.html&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></span></li>
+<li id="cite_note-EWD841a-7"><span class="mw-cite-backlink"><b><a href="#cite_ref-EWD841a_7-0">^</a></b></span> <span class="reference-text"><cite id="CITEREFDijkstra" class="citation">Dijkstra, Edsger W., <a rel="nofollow" class="external text" href="https://www.cs.utexas.edu/users/EWD/ewd08xx/EWD841a.PDF"><i>Reflections on "A note on two problems in connexion with graphs</i></a> <span style="font-size:85%;">(PDF)</span></cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&amp;rft.genre=book&amp;rft.btitle=Reflections+on+%22A+note+on+two+problems+in+connexion+with+graphs&amp;rft.aulast=Dijkstra&amp;rft.aufirst=Edsger+W.&amp;rft_id=https%3A%2F%2Fwww.cs.utexas.edu%2Fusers%2FEWD%2Fewd08xx%2FEWD841a.PDF&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></span></li>
+<li id="cite_note-8"><span class="mw-cite-backlink"><b><a href="#cite_ref-8">^</a></b></span> <span class="reference-text"><cite id="CITEREFTarjan1983" class="citation"><a href="/wiki/Robert_Endre_Tarjan" class="mw-redirect" title="Robert Endre Tarjan">Tarjan, Robert Endre</a> (1983), <i>Data Structures and Network Algorithms</i>, CBMS_NSF Regional Conference Series in Applied Mathematics, <b>44</b>, Society for Industrial and Applied Mathematics, p.&#160;75, <q>The third classical minimum spanning tree algorithm was discovered by Jarník and rediscovered by Prim and Dikstra; it is commonly known as Prim's algorithm.</q></cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&amp;rft.genre=book&amp;rft.btitle=Data+Structures+and+Network+Algorithms&amp;rft.series=CBMS_NSF+Regional+Conference+Series+in+Applied+Mathematics&amp;rft.pages=75&amp;rft.pub=Society+for+Industrial+and+Applied+Mathematics&amp;rft.date=1983&amp;rft.aulast=Tarjan&amp;rft.aufirst=Robert+Endre&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></span></li>
+<li id="cite_note-9"><span class="mw-cite-backlink"><b><a href="#cite_ref-9">^</a></b></span> <span class="reference-text"><cite class="citation journal">Prim, R.C. (1957). <a rel="nofollow" class="external text" href="http://bioinfo.ict.ac.cn/~dbu/AlgorithmCourses/Lectures/Prim1957.pdf">"Shortest connection networks and some generalizations"</a> <span style="font-size:85%;">(PDF)</span>. <i>Bell System Technical Journal</i>. <b>36</b>: 1389–1401. <a href="/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="//doi.org/10.1002%2Fj.1538-7305.1957.tb01515.x">10.1002/j.1538-7305.1957.tb01515.x</a>. <a rel="nofollow" class="external text" href="https://web.archive.org/web/20170718230207/http://bioinfo.ict.ac.cn/~dbu/AlgorithmCourses/Lectures/Prim1957.pdf">Archived</a> <span style="font-size:85%;">(PDF)</span> from the original on 18 July 2017.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.genre=article&amp;rft.jtitle=Bell+System+Technical+Journal&amp;rft.atitle=Shortest+connection+networks+and+some+generalizations&amp;rft.volume=36&amp;rft.pages=1389-1401&amp;rft.date=1957&amp;rft_id=info%3Adoi%2F10.1002%2Fj.1538-7305.1957.tb01515.x&amp;rft.aulast=Prim&amp;rft.aufirst=R.C.&amp;rft_id=http%3A%2F%2Fbioinfo.ict.ac.cn%2F~dbu%2FAlgorithmCourses%2FLectures%2FPrim1957.pdf&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></span></li>
+<li id="cite_note-10"><span class="mw-cite-backlink"><b><a href="#cite_ref-10">^</a></b></span> <span class="reference-text">V. Jarník: <i>O jistém problému minimálním</i> [About a certain minimal problem], Práce Moravské Přírodovědecké Společnosti, 6, 1930, pp.&#160;57–63. (in Czech)</span></li>
+<li id="cite_note-chen_07-11"><span class="mw-cite-backlink"><b><a href="#cite_ref-chen_07_11-0">^</a></b></span> <span class="reference-text"><cite id="chen" class="citation book">Chen, M.; Chowdhury, R. A.; Ramachandran, V.; Roche, D. L.; Tong, L. (2007). <a rel="nofollow" class="external text" href="http://www.cs.sunysb.edu/~rezaul/papers/TR-07-54.pdf"><i>Priority Queues and Dijkstra’s Algorithm — UTCS Technical Report TR-07-54 — 12 October 2007</i></a> <span style="font-size:85%;">(PDF)</span>. Austin, Texas: The University of Texas at Austin, Department of Computer Sciences.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&amp;rft.genre=book&amp;rft.btitle=Priority+Queues+and+Dijkstra%E2%80%99s+Algorithm+%26mdash%3B+UTCS+Technical+Report+TR-07-54+%26mdash%3B+12+October+2007&amp;rft.place=Austin%2C+Texas&amp;rft.pub=The+University+of+Texas+at+Austin%2C+Department+of+Computer+Sciences&amp;rft.date=2007&amp;rft.aulast=Chen&amp;rft.aufirst=M.&amp;rft.au=Chowdhury%2C+R.+A.&amp;rft.au=Ramachandran%2C+V.&amp;rft.au=Roche%2C+D.+L.&amp;rft.au=Tong%2C+L.&amp;rft_id=http%3A%2F%2Fwww.cs.sunysb.edu%2F~rezaul%2Fpapers%2FTR-07-54.pdf&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></span></li>
+<li id="cite_note-aima-12"><span class="mw-cite-backlink">^ <a href="#cite_ref-aima_12-0"><sup><i><b>a</b></i></sup></a> <a href="#cite_ref-aima_12-1"><sup><i><b>b</b></i></sup></a></span> <span class="reference-text"><cite class="citation book"><a href="/wiki/Stuart_J._Russell" title="Stuart J. Russell">Russell, Stuart</a>; <a href="/wiki/Peter_Norvig" title="Peter Norvig">Norvig, Peter</a> (2009) [1995]. <i><a href="/wiki/Artificial_Intelligence:_A_Modern_Approach" title="Artificial Intelligence: A Modern Approach">Artificial Intelligence: A Modern Approach</a></i> (3rd ed.). Prentice Hall. pp.&#160;75, 81. <a href="/wiki/International_Standard_Book_Number" title="International Standard Book Number">ISBN</a>&#160;<a href="/wiki/Special:BookSources/978-0-13-604259-4" title="Special:BookSources/978-0-13-604259-4">978-0-13-604259-4</a>.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&amp;rft.genre=book&amp;rft.btitle=Artificial+Intelligence%3A+A+Modern+Approach&amp;rft.pages=75%2C+81&amp;rft.edition=3rd&amp;rft.pub=Prentice+Hall&amp;rft.date=2009&amp;rft.isbn=978-0-13-604259-4&amp;rft.aulast=Russell&amp;rft.aufirst=Stuart&amp;rft.au=Norvig%2C+Peter&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></span></li>
+<li id="cite_note-13"><span class="mw-cite-backlink"><b><a href="#cite_ref-13">^</a></b></span> <span class="reference-text">Sometimes also <i>least-cost-first search</i>: <cite class="citation journal">Nau, Dana S. (1983). <a rel="nofollow" class="external text" href="https://www.cs.umd.edu/~nau/papers/nau1983expert.pdf">"Expert computer systems"</a> <span style="font-size:85%;">(PDF)</span>. <i>Computer</i>. IEEE. <b>16</b> (2): 63–85. <a href="/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="//doi.org/10.1109%2Fmc.1983.1654302">10.1109/mc.1983.1654302</a>.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.genre=article&amp;rft.jtitle=Computer&amp;rft.atitle=Expert+computer+systems&amp;rft.volume=16&amp;rft.issue=2&amp;rft.pages=63-85&amp;rft.date=1983&amp;rft_id=info%3Adoi%2F10.1109%2Fmc.1983.1654302&amp;rft.aulast=Nau&amp;rft.aufirst=Dana+S.&amp;rft_id=https%3A%2F%2Fwww.cs.umd.edu%2F~nau%2Fpapers%2Fnau1983expert.pdf&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></span></li>
+<li id="cite_note-speedup-14"><span class="mw-cite-backlink"><b><a href="#cite_ref-speedup_14-0">^</a></b></span> <span class="reference-text"><cite class="citation conference">Wagner, Dorothea; Willhalm, Thomas (2007). <i>Speed-up techniques for shortest-path computations</i>. STACS. pp.&#160;23–36.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&amp;rft.genre=conference&amp;rft.btitle=Speed-up+techniques+for+shortest-path+computations&amp;rft.pages=23-36&amp;rft.date=2007&amp;rft.aulast=Wagner&amp;rft.aufirst=Dorothea&amp;rft.au=Willhalm%2C+Thomas&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></span></li>
+<li id="cite_note-15"><span class="mw-cite-backlink"><b><a href="#cite_ref-15">^</a></b></span> <span class="reference-text"><cite class="citation journal">Bauer, Reinhard; Delling, Daniel; Sanders, Peter; Schieferdecker, Dennis; Schultes, Dominik; Wagner, Dorothea (2010). "Combining hierarchical and goal-directed speed-up techniques for Dijkstra's algorithm". <i>J. Experimental Algorithmics</i>. <b>15</b>.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.genre=article&amp;rft.jtitle=J.+Experimental+Algorithmics&amp;rft.atitle=Combining+hierarchical+and+goal-directed+speed-up+techniques+for+Dijkstra%27s+algorithm&amp;rft.volume=15&amp;rft.date=2010&amp;rft.aulast=Bauer&amp;rft.aufirst=Reinhard&amp;rft.au=Delling%2C+Daniel&amp;rft.au=Sanders%2C+Peter&amp;rft.au=Schieferdecker%2C+Dennis&amp;rft.au=Schultes%2C+Dominik&amp;rft.au=Wagner%2C+Dorothea&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></span></li>
+<li id="cite_note-16"><span class="mw-cite-backlink"><b><a href="#cite_ref-16">^</a></b></span> <span class="reference-text"><a rel="nofollow" class="external free" href="http://www.boost.org/doc/libs/1_44_0/libs/graph/doc/dag_shortest_paths.html">http://www.boost.org/doc/libs/1_44_0/libs/graph/doc/dag_shortest_paths.html</a></span></li>
+<li id="cite_note-17"><span class="mw-cite-backlink"><b><a href="#cite_ref-17">^</a></b></span> <span class="reference-text"><a href="#CITEREFCormenLeisersonRivestStein2001">Cormen et al. 2001</a>, p.&#160;655</span></li>
+<li id="cite_note-sniedovich_06-18"><span class="mw-cite-backlink"><b><a href="#cite_ref-sniedovich_06_18-0">^</a></b></span> <span class="reference-text"><cite class="citation journal">Sniedovich, M. (2006). <a rel="nofollow" class="external text" href="http://matwbn.icm.edu.pl/ksiazki/cc/cc35/cc3536.pdf">"Dijkstra's algorithm revisited: the dynamic programming connexion"</a> <span style="font-size:85%;">(<a href="/wiki/PDF" class="mw-redirect" title="PDF">PDF</a>)</span>. <i>Journal of Control and Cybernetics</i>. <b>35</b> (3): 599–620.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.genre=article&amp;rft.jtitle=Journal+of+Control+and+Cybernetics&amp;rft.atitle=Dijkstra%E2%80%99s+algorithm+revisited%3A+the+dynamic+programming+connexion&amp;rft.volume=35&amp;rft.issue=3&amp;rft.pages=599-620&amp;rft.date=2006&amp;rft.aulast=Sniedovich&amp;rft.aufirst=M.&amp;rft_id=http%3A%2F%2Fmatwbn.icm.edu.pl%2Fksiazki%2Fcc%2Fcc35%2Fcc3536.pdf&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span> <a rel="nofollow" class="external text" href="http://www.ifors.ms.unimelb.edu.au/tutorial/dijkstra_new/index.html">Online version of the paper with interactive computational modules.</a></span></li>
+<li id="cite_note-denardo_03-19"><span class="mw-cite-backlink"><b><a href="#cite_ref-denardo_03_19-0">^</a></b></span> <span class="reference-text"><cite class="citation book">Denardo, E.V. (2003). <i>Dynamic Programming: Models and Applications</i>. Mineola, NY: <a href="/wiki/Dover_Publications" title="Dover Publications">Dover Publications</a>. <a href="/wiki/International_Standard_Book_Number" title="International Standard Book Number">ISBN</a>&#160;<a href="/wiki/Special:BookSources/978-0-486-42810-9" title="Special:BookSources/978-0-486-42810-9">978-0-486-42810-9</a>.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&amp;rft.genre=book&amp;rft.btitle=Dynamic+Programming%3A+Models+and+Applications&amp;rft.place=Mineola%2C+NY&amp;rft.pub=Dover+Publications&amp;rft.date=2003&amp;rft.isbn=978-0-486-42810-9&amp;rft.aulast=Denardo&amp;rft.aufirst=E.V.&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></span></li>
+<li id="cite_note-sniedovich_10-20"><span class="mw-cite-backlink"><b><a href="#cite_ref-sniedovich_10_20-0">^</a></b></span> <span class="reference-text"><cite class="citation book">Sniedovich, M. (2010). <i>Dynamic Programming: Foundations and Principles</i>. <a href="/w/index.php?title=Francis_%26_Taylor&amp;action=edit&amp;redlink=1" class="new" title="Francis &amp; Taylor (page does not exist)">Francis &amp; Taylor</a>. <a href="/wiki/International_Standard_Book_Number" title="International Standard Book Number">ISBN</a>&#160;<a href="/wiki/Special:BookSources/978-0-8247-4099-3" title="Special:BookSources/978-0-8247-4099-3">978-0-8247-4099-3</a>.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&amp;rft.genre=book&amp;rft.btitle=Dynamic+Programming%3A+Foundations+and+Principles&amp;rft.pub=Francis+%26+Taylor&amp;rft.date=2010&amp;rft.isbn=978-0-8247-4099-3&amp;rft.aulast=Sniedovich&amp;rft.aufirst=M.&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></span></li>
+<li id="cite_note-21"><span class="mw-cite-backlink"><b><a href="#cite_ref-21">^</a></b></span> <span class="reference-text"><a href="#CITEREFDijkstra1959">Dijkstra 1959</a>, p.&#160;270</span></li>
+</ol>
+</div>
+</div>
+<h2><span class="mw-headline" id="References">References</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Dijkstra%27s_algorithm&amp;action=edit&amp;section=14" title="Edit section: References">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ul>
+<li><cite id="CITEREFCormenLeisersonRivestStein2001" class="citation book"><a href="/wiki/Thomas_H._Cormen" title="Thomas H. Cormen">Cormen, Thomas H.</a>; <a href="/wiki/Charles_E._Leiserson" title="Charles E. Leiserson">Leiserson, Charles E.</a>; <a href="/wiki/Ronald_L._Rivest" class="mw-redirect" title="Ronald L. Rivest">Rivest, Ronald L.</a>; <a href="/wiki/Clifford_Stein" title="Clifford Stein">Stein, Clifford</a> (2001). "Section 24.3: Dijkstra's algorithm". <i><a href="/wiki/Introduction_to_Algorithms" title="Introduction to Algorithms">Introduction to Algorithms</a></i> (Second ed.). <a href="/wiki/MIT_Press" title="MIT Press">MIT Press</a> and <a href="/wiki/McGraw%E2%80%93Hill" class="mw-redirect" title="McGraw–Hill">McGraw–Hill</a>. pp.&#160;595–601. <a href="/wiki/International_Standard_Book_Number" title="International Standard Book Number">ISBN</a>&#160;<a href="/wiki/Special:BookSources/0-262-03293-7" title="Special:BookSources/0-262-03293-7">0-262-03293-7</a>.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&amp;rft.genre=bookitem&amp;rft.atitle=Section+24.3%3A+Dijkstra%27s+algorithm&amp;rft.btitle=Introduction+to+Algorithms&amp;rft.pages=595-601&amp;rft.edition=Second&amp;rft.pub=MIT+Press+and+McGraw%E2%80%93Hill&amp;rft.date=2001&amp;rft.isbn=0-262-03293-7&amp;rft.aulast=Cormen&amp;rft.aufirst=Thomas+H.&amp;rft.au=Leiserson%2C+Charles+E.&amp;rft.au=Rivest%2C+Ronald+L.&amp;rft.au=Stein%2C+Clifford&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></li>
+<li><cite id="CITEREFDial1969" class="citation journal">Dial, Robert B. (1969). "Algorithm 360: Shortest-path forest with topological ordering [H]". <i><a href="/wiki/Communications_of_the_ACM" title="Communications of the ACM">Communications of the ACM</a></i>. <b>12</b> (11): 632–633. <a href="/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="//doi.org/10.1145%2F363269.363610">10.1145/363269.363610</a>.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.genre=article&amp;rft.jtitle=Communications+of+the+ACM&amp;rft.atitle=Algorithm+360%3A+Shortest-path+forest+with+topological+ordering+%5BH%5D&amp;rft.volume=12&amp;rft.issue=11&amp;rft.pages=632-633&amp;rft.date=1969&amp;rft_id=info%3Adoi%2F10.1145%2F363269.363610&amp;rft.aulast=Dial&amp;rft.aufirst=Robert+B.&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></li>
+<li><cite id="CITEREFFredmanTarjan1984" class="citation conference"><a href="/wiki/Michael_Fredman" title="Michael Fredman">Fredman, Michael Lawrence</a>; <a href="/wiki/Robert_Tarjan" title="Robert Tarjan">Tarjan, Robert E.</a> (1984). <i>Fibonacci heaps and their uses in improved network optimization algorithms</i>. 25th Annual Symposium on Foundations of Computer Science. <a href="/wiki/IEEE" class="mw-redirect" title="IEEE">IEEE</a>. pp.&#160;338–346. <a href="/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="//doi.org/10.1109%2FSFCS.1984.715934">10.1109/SFCS.1984.715934</a>.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&amp;rft.genre=conference&amp;rft.btitle=Fibonacci+heaps+and+their+uses+in+improved+network+optimization+algorithms&amp;rft.pages=338-346&amp;rft.pub=IEEE&amp;rft.date=1984&amp;rft_id=info%3Adoi%2F10.1109%2FSFCS.1984.715934&amp;rft.aulast=Fredman&amp;rft.aufirst=Michael+Lawrence&amp;rft.au=Tarjan%2C+Robert+E.&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></li>
+<li><cite id="CITEREFFredmanTarjan1987" class="citation journal"><a href="/wiki/Michael_Fredman" title="Michael Fredman">Fredman, Michael Lawrence</a>; <a href="/wiki/Robert_Tarjan" title="Robert Tarjan">Tarjan, Robert E.</a> (1987). <a rel="nofollow" class="external text" href="http://portal.acm.org/citation.cfm?id=28874">"Fibonacci heaps and their uses in improved network optimization algorithms"</a>. <i>Journal of the Association for Computing Machinery</i>. <b>34</b> (3): 596–615. <a href="/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="//doi.org/10.1145%2F28869.28874">10.1145/28869.28874</a>.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.genre=article&amp;rft.jtitle=Journal+of+the+Association+for+Computing+Machinery&amp;rft.atitle=Fibonacci+heaps+and+their+uses+in+improved+network+optimization+algorithms&amp;rft.volume=34&amp;rft.issue=3&amp;rft.pages=596-615&amp;rft.date=1987&amp;rft_id=info%3Adoi%2F10.1145%2F28869.28874&amp;rft.aulast=Fredman&amp;rft.aufirst=Michael+Lawrence&amp;rft.au=Tarjan%2C+Robert+E.&amp;rft_id=http%3A%2F%2Fportal.acm.org%2Fcitation.cfm%3Fid%3D28874&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></li>
+<li><cite class="citation journal">Zhan, F. Benjamin; Noon, Charles E. (February 1998). "Shortest Path Algorithms: An Evaluation Using Real Road Networks". <i><a href="/wiki/Transportation_Science" title="Transportation Science">Transportation Science</a></i>. <b>32</b> (1): 65–73. <a href="/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="//doi.org/10.1287%2Ftrsc.32.1.65">10.1287/trsc.32.1.65</a>.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.genre=article&amp;rft.jtitle=Transportation+Science&amp;rft.atitle=Shortest+Path+Algorithms%3A+An+Evaluation+Using+Real+Road+Networks&amp;rft.volume=32&amp;rft.issue=1&amp;rft.pages=65-73&amp;rft.date=1998-02&amp;rft_id=info%3Adoi%2F10.1287%2Ftrsc.32.1.65&amp;rft.aulast=Zhan&amp;rft.aufirst=F.+Benjamin&amp;rft.au=Noon%2C+Charles+E.&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></li>
+<li><cite id="CITEREFLeyzorekGrayJohnsonLadew1957" class="citation book">Leyzorek, M.; Gray, R. S.; Johnson, A. A.; Ladew, W. C.; Meaker, Jr., S. R.; Petry, R. M.; Seitz, R. N. (1957). <i>Investigation of Model Techniques — First Annual Report — 6 June 1956 — 1 July 1957 — A Study of Model Techniques for Communication Systems</i>. Cleveland, Ohio: Case Institute of Technology.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&amp;rft.genre=book&amp;rft.btitle=Investigation+of+Model+Techniques+%26mdash%3B+First+Annual+Report+%26mdash%3B+6+June+1956+%26mdash%3B+1+July+1957+%26mdash%3B+A+Study+of+Model+Techniques+for+Communication+Systems&amp;rft.place=Cleveland%2C+Ohio&amp;rft.pub=Case+Institute+of+Technology&amp;rft.date=1957&amp;rft.aulast=Leyzorek&amp;rft.aufirst=M.&amp;rft.au=Gray%2C+R.+S.&amp;rft.au=Johnson%2C+A.+A.&amp;rft.au=Ladew%2C+W.+C.&amp;rft.au=Meaker%2C+Jr.%2C+S.+R.&amp;rft.au=Petry%2C+R.+M.&amp;rft.au=Seitz%2C+R.+N.&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></li>
+<li><cite class="citation journal"><a href="/wiki/Donald_Knuth" title="Donald Knuth">Knuth, D.E.</a> (1977). "A Generalization of Dijkstra's Algorithm". <i><a href="/wiki/Information_Processing_Letters" title="Information Processing Letters">Information Processing Letters</a></i>. <b>6</b> (1): 1–5. <a href="/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="//doi.org/10.1016%2F0020-0190%2877%2990002-3">10.1016/0020-0190(77)90002-3</a>.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.genre=article&amp;rft.jtitle=Information+Processing+Letters&amp;rft.atitle=A+Generalization+of+Dijkstra%27s+Algorithm&amp;rft.volume=6&amp;rft.issue=1&amp;rft.pages=1-5&amp;rft.date=1977&amp;rft_id=info%3Adoi%2F10.1016%2F0020-0190%2877%2990002-3&amp;rft.aulast=Knuth&amp;rft.aufirst=D.E.&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></li>
+<li><cite id="CITEREFAhujaMehlhornOrlinTarjan1990" class="citation journal">Ahuja, Ravindra K.; Mehlhorn, Kurt; Orlin, James B.; Tarjan, Robert E. (April 1990). "Faster Algorithms for the Shortest Path Problem". <i>Journal of Association for Computing Machinery (ACM)</i>. <b>37</b> (2): 213–223. <a href="/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="//doi.org/10.1145%2F77600.77615">10.1145/77600.77615</a>.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.genre=article&amp;rft.jtitle=Journal+of+Association+for+Computing+Machinery+%28ACM%29&amp;rft.atitle=Faster+Algorithms+for+the+Shortest+Path+Problem&amp;rft.volume=37&amp;rft.issue=2&amp;rft.pages=213-223&amp;rft.date=1990-04&amp;rft_id=info%3Adoi%2F10.1145%2F77600.77615&amp;rft.aulast=Ahuja&amp;rft.aufirst=Ravindra+K.&amp;rft.au=Mehlhorn%2C+Kurt&amp;rft.au=Orlin%2C+James+B.&amp;rft.au=Tarjan%2C+Robert+E.&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></li>
+<li><cite id="CITEREFRaman1997" class="citation journal">Raman, Rajeev (1997). "Recent results on the single-source shortest paths problem". <i>SIGACT News</i>. <b>28</b> (2): 81–87. <a href="/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="//doi.org/10.1145%2F261342.261352">10.1145/261342.261352</a>.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.genre=article&amp;rft.jtitle=SIGACT+News&amp;rft.atitle=Recent+results+on+the+single-source+shortest+paths+problem&amp;rft.volume=28&amp;rft.issue=2&amp;rft.pages=81-87&amp;rft.date=1997&amp;rft_id=info%3Adoi%2F10.1145%2F261342.261352&amp;rft.aulast=Raman&amp;rft.aufirst=Rajeev&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></li>
+<li><cite id="CITEREFThorup2000" class="citation journal">Thorup, Mikkel (2000). "On RAM priority Queues". <i>SIAM Journal on Computing</i>. <b>30</b> (1): 86–109. <a href="/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="//doi.org/10.1137%2FS0097539795288246">10.1137/S0097539795288246</a>.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.genre=article&amp;rft.jtitle=SIAM+Journal+on+Computing&amp;rft.atitle=On+RAM+priority+Queues&amp;rft.volume=30&amp;rft.issue=1&amp;rft.pages=86-109&amp;rft.date=2000&amp;rft_id=info%3Adoi%2F10.1137%2FS0097539795288246&amp;rft.aulast=Thorup&amp;rft.aufirst=Mikkel&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></li>
+<li><cite id="CITEREFThorup1999" class="citation journal">Thorup, Mikkel (1999). <a rel="nofollow" class="external text" href="http://www.diku.dk/users/mthorup/PAPERS/sssp.ps.gz">"Undirected single-source shortest paths with positive integer weights in linear time"</a>. <i>journal of the ACM</i>. <b>46</b> (3): 362–394. <a href="/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="//doi.org/10.1145%2F316542.316548">10.1145/316542.316548</a>.</cite><span title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.genre=article&amp;rft.jtitle=journal+of+the+ACM&amp;rft.atitle=Undirected+single-source+shortest+paths+with+positive+integer+weights+in+linear+time&amp;rft.volume=46&amp;rft.issue=3&amp;rft.pages=362-394&amp;rft.date=1999&amp;rft_id=info%3Adoi%2F10.1145%2F316542.316548&amp;rft.aulast=Thorup&amp;rft.aufirst=Mikkel&amp;rft_id=http%3A%2F%2Fwww.diku.dk%2Fusers%2Fmthorup%2FPAPERS%2Fsssp.ps.gz&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ADijkstra%27s+algorithm" class="Z3988"><span style="display:none;">&#160;</span></span></li>
+</ul>
+<h2><span class="mw-headline" id="External_links">External links</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Dijkstra%27s_algorithm&amp;action=edit&amp;section=15" title="Edit section: External links">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<table role="presentation" class="mbox-small plainlinks sistersitebox" style="background-color:#f9f9f9;border:1px solid #aaa;color:#000">
+<tr>
+<td class="mbox-image"><img alt="" src="//upload.wikimedia.org/wikipedia/en/thumb/4/4a/Commons-logo.svg/30px-Commons-logo.svg.png" width="30" height="40" class="noviewer" srcset="//upload.wikimedia.org/wikipedia/en/thumb/4/4a/Commons-logo.svg/45px-Commons-logo.svg.png 1.5x, //upload.wikimedia.org/wikipedia/en/thumb/4/4a/Commons-logo.svg/59px-Commons-logo.svg.png 2x" data-file-width="1024" data-file-height="1376" /></td>
+<td class="mbox-text plainlist">Wikimedia Commons has media related to <i><b><a href="https://commons.wikimedia.org/wiki/Category:Dijkstra%27s_algorithm" class="extiw" title="commons:Category:Dijkstra's algorithm">Dijkstra's algorithm</a></b></i>.</td>
+</tr>
+</table>
+<ul>
+<li><a rel="nofollow" class="external text" href="http://purl.umn.edu/107247">Oral history interview with Edsger W. Dijkstra</a>, <a href="/wiki/Charles_Babbage_Institute" title="Charles Babbage Institute">Charles Babbage Institute</a> University of Minnesota, Minneapolis.</li>
+</ul>
+<ul>
+<li><a rel="nofollow" class="external text" href="http://blog.cleancoder.com/uncle-bob/2016/10/26/DijkstrasAlg.html">Implementation of Dijkstra's algorithm using TDD</a>, <a href="/wiki/Robert_Cecil_Martin" title="Robert Cecil Martin">Robert Cecil Martin</a>, The Clean Code Blog</li>
+<li><a rel="nofollow" class="external text" href="http://www.gilles-bertrand.com/2014/03/disjkstra-algorithm-description-shortest-path-pseudo-code-data-structure-example-image.html">Graphical explanation of Dijkstra's algorithm step-by-step on an example</a>, <a href="/w/index.php?title=Gilles_Bertrand&amp;action=edit&amp;redlink=1" class="new" title="Gilles Bertrand (page does not exist)">Gilles Bertrand</a>, A step by step graphical explanation of Dijkstra's algorithm operations</li>
+</ul>
+<div role="navigation" class="navbox" aria-labelledby="Edsger_Dijkstra" style="padding:3px">
+<table class="nowraplinks hlist collapsible autocollapse navbox-inner" style="border-spacing:0;background:transparent;color:inherit">
+<tr>
+<th scope="col" class="navbox-title" colspan="2">
+<div class="plainlinks hlist navbar mini">
+<ul>
+<li class="nv-view"><a href="/wiki/Template:Edsger_Dijkstra" title="Template:Edsger Dijkstra"><abbr title="View this template" style=";;background:none transparent;border:none;-moz-box-shadow:none;-webkit-box-shadow:none;box-shadow:none;">v</abbr></a></li>
+<li class="nv-talk"><a href="/w/index.php?title=Template_talk:Edsger_Dijkstra&amp;action=edit&amp;redlink=1" class="new" title="Template talk:Edsger Dijkstra (page does not exist)"><abbr title="Discuss this template" style=";;background:none transparent;border:none;-moz-box-shadow:none;-webkit-box-shadow:none;box-shadow:none;">t</abbr></a></li>
+<li class="nv-edit"><a class="external text" href="//en.wikipedia.org/w/index.php?title=Template:Edsger_Dijkstra&amp;action=edit"><abbr title="Edit this template" style=";;background:none transparent;border:none;-moz-box-shadow:none;-webkit-box-shadow:none;box-shadow:none;">e</abbr></a></li>
+</ul>
+</div>
+<div id="Edsger_Dijkstra" style="font-size:114%;margin:0 4em"><a href="/wiki/Edsger_W._Dijkstra" title="Edsger W. Dijkstra">Edsger Dijkstra</a></div>
+</th>
+</tr>
+<tr>
+<th scope="row" class="navbox-group" style="width:1%"><a href="/wiki/Edsger_W._Dijkstra#Publications" title="Edsger W. Dijkstra">Publications</a></th>
+<td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px">
+<div style="padding:0em 0.25em">
+<ul>
+<li><i><a href="/wiki/Structured_Programming" class="mw-redirect" title="Structured Programming">Structured Programming</a></i> (book)</li>
+<li><i>A Discipline of Programming</i> (book)</li>
+<li><i>A Method of Programming</i> (book)</li>
+<li><i>Predicate Calculus and Program Semantics</i> (book)</li>
+<li><i>Selected Writings on Computing: A Personal Perspective</i> (book)</li>
+<li><a href="/wiki/Edsger_W._Dijkstra#Publications" title="Edsger W. Dijkstra">Selected papers</a></li>
+<li><i><a href="/wiki/EWDs" class="mw-redirect" title="EWDs">EWDs</a></i> (EWD manuscripts)&#160;<span style="font-style:normal;"><sup><small>1</small></sup></span></li>
+<li><i><a href="/wiki/Go_To_Statement_Considered_Harmful" class="mw-redirect" title="Go To Statement Considered Harmful">Go To Statement Considered Harmful</a></i></li>
+<li><i><a href="/wiki/On_the_Cruelty_of_Really_Teaching_Computer_Science" title="On the Cruelty of Really Teaching Computer Science">On the Cruelty of Really Teaching Computer Science</a></i></li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th scope="row" class="navbox-group" style="width:1%"><a href="/wiki/Computer_science#Areas_of_computer_science" title="Computer science">Main research areas</a></th>
+<td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px">
+<div style="padding:0em 0.25em">
+<ul>
+<li><a href="/wiki/Theoretical_computer_science" title="Theoretical computer science">Theoretical computing science</a></li>
+<li><a href="/wiki/Software_engineering" title="Software engineering">Software engineering</a></li>
+<li><a href="/wiki/Systems_science" title="Systems science">Systems science</a></li>
+<li><a href="/wiki/Algorithm_design" title="Algorithm design">Algorithm design</a></li>
+<li><a href="/wiki/Concurrent_computing" title="Concurrent computing">Concurrent computing</a></li>
+<li><a href="/wiki/Distributed_computing" title="Distributed computing">Distributed computing</a></li>
+<li><a href="/wiki/Formal_methods" title="Formal methods">Formal methods</a></li>
+<li><a href="/wiki/Programming_methodology" class="mw-redirect" title="Programming methodology">Programming methodology</a></li>
+<li><a href="/wiki/Programming_language_research" class="mw-redirect" title="Programming language research">Programming language research</a></li>
+<li><a href="/wiki/Software_design" title="Software design">Program design</a> and <a href="/wiki/Software_development" title="Software development">development</a></li>
+<li><a href="/wiki/Software_architecture" title="Software architecture">Software architecture</a></li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th scope="row" class="navbox-group" style="width:1%"><a href="/wiki/Edsger_W._Dijkstra#Scientific_contributions_and_impacts" title="Edsger W. Dijkstra">Scientific contributions</a></th>
+<td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px">
+<div style="padding:0em 0.25em"></div>
+<table class="nowraplinks navbox-subgroup" style="border-spacing:0">
+<tr>
+<th scope="row" class="navbox-group" style="width:1%"><a href="/wiki/Edsger_W._Dijkstra#Scientific_contributions_and_impacts" title="Edsger W. Dijkstra">Concepts and methods</a></th>
+<td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px">
+<div style="padding:0em 0.25em">
+<ul>
+<li><a href="/wiki/ALGOL_60" title="ALGOL 60">ALGOL 60</a> <a href="/wiki/Programming_language_implementation" title="Programming language implementation">implementation</a></li>
+<li><a href="/wiki/Call_stack" title="Call stack">Call stack</a></li>
+<li><a href="/wiki/Concurrency_(computer_science)" title="Concurrency (computer science)">Concurrency</a></li>
+<li><a href="/wiki/Concurrent_programming" class="mw-redirect" title="Concurrent programming">Concurrent programming</a></li>
+<li><a href="/wiki/Cooperating_sequential_processes" class="mw-redirect" title="Cooperating sequential processes">Cooperating sequential processes</a></li>
+<li><a href="/wiki/Critical_section" title="Critical section">Critical section</a></li>
+<li><a href="/wiki/Deadly_embrace" class="mw-redirect" title="Deadly embrace">Deadly embrace</a> (<a href="/wiki/Deadlock" title="Deadlock">deadlock</a>)</li>
+<li><a href="/wiki/Dining_philosophers_problem" title="Dining philosophers problem">Dining philosophers problem</a></li>
+<li><a href="/wiki/Dutch_national_flag_problem" title="Dutch national flag problem">Dutch national flag problem</a></li>
+<li><a href="/wiki/Fault-tolerant_system" class="mw-redirect" title="Fault-tolerant system">Fault-tolerant system</a></li>
+<li><a href="/wiki/Goto-less_programming" class="mw-redirect" title="Goto-less programming">Goto-less programming</a></li>
+<li><a href="/wiki/Guarded_commands" class="mw-redirect" title="Guarded commands">Guarded commands</a></li>
+<li><a href="/wiki/Guarded_Command_Language" title="Guarded Command Language">Guarded Command Language</a></li>
+<li><a href="/wiki/Abstraction_layer" title="Abstraction layer">Layered structure</a> in <a href="/wiki/Software_architecture" title="Software architecture">software architecture</a></li>
+<li><a href="/wiki/Abstraction_layer" title="Abstraction layer">Levels of abstraction</a></li>
+<li><a href="/wiki/Multithreaded_programming" class="mw-redirect" title="Multithreaded programming">Multithreaded programming</a></li>
+<li><a href="/wiki/Mutual_exclusion" title="Mutual exclusion">Mutual exclusion</a> (<a href="/wiki/Mutex" class="mw-redirect" title="Mutex">mutex</a>)</li>
+<li><a href="/wiki/Philosophy_of_computer_science" title="Philosophy of computer science">Philosophy of computer programming and computing science</a></li>
+<li><a href="/wiki/Producer%E2%80%93consumer_problem" title="Producer–consumer problem">Producer–consumer problem</a> (<a href="/wiki/Bounded_buffer_problem" class="mw-redirect" title="Bounded buffer problem">bounded buffer problem</a>)</li>
+<li><a href="/wiki/Software_product_line" title="Software product line">Program families</a></li>
+<li><a href="/wiki/Predicate_transformer_semantics" title="Predicate transformer semantics">Predicate transformer semantics</a></li>
+<li><a href="/wiki/Synchronization_(computer_science)#Thread_or_process_synchronization" title="Synchronization (computer science)">Process synchronization</a></li>
+<li><a href="/wiki/Self-stabilizing_system" class="mw-redirect" title="Self-stabilizing system">Self-stabilizing distributed system</a></li>
+<li><a href="/wiki/Semaphore_(programming)" title="Semaphore (programming)">Semaphore (programming)</a></li>
+<li><a href="/wiki/Separation_of_concerns" title="Separation of concerns">Separation of concerns</a></li>
+<li><a href="/wiki/Sleeping_barber_problem" title="Sleeping barber problem">Sleeping barber problem</a></li>
+<li><a href="/wiki/Software_crisis" title="Software crisis">Software crisis</a></li>
+<li><a href="/wiki/Structured_analysis" title="Structured analysis">Structured analysis</a></li>
+<li><a href="/wiki/Structured_programming" title="Structured programming">Structured programming</a></li>
+<li><a href="/wiki/THE_multiprogramming_system" title="THE multiprogramming system">THE multiprogramming system</a></li>
+<li><a href="/wiki/Unbounded_nondeterminism" title="Unbounded nondeterminism">Unbounded nondeterminism</a></li>
+<li><a href="/wiki/Weakest_precondition_calculus" class="mw-redirect" title="Weakest precondition calculus">Weakest precondition calculus</a></li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th scope="row" class="navbox-group" style="width:1%"><a href="/wiki/Edsger_W._Dijkstra#Algorithmic_work" title="Edsger W. Dijkstra">Algorithms</a></th>
+<td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px">
+<div style="padding:0em 0.25em">
+<ul>
+<li><a href="/wiki/Banker%27s_algorithm" title="Banker's algorithm">Banker's algorithm</a></li>
+<li><a class="mw-selflink selflink">Dijkstra's algorithm</a></li>
+<li><a href="/wiki/DJP_algorithm" class="mw-redirect" title="DJP algorithm">DJP algorithm</a> (<a href="/wiki/Prim%27s_algorithm" title="Prim's algorithm">Prim's algorithm</a>)</li>
+<li><a href="/wiki/Dijkstra-Scholten_algorithm" class="mw-redirect" title="Dijkstra-Scholten algorithm">Dijkstra-Scholten algorithm</a></li>
+<li><a href="/wiki/Dekker%27s_algorithm" title="Dekker's algorithm">Dekker's algorithm</a> (generalization)</li>
+<li><a href="/wiki/Smoothsort" title="Smoothsort">Smoothsort</a></li>
+<li><a href="/wiki/Shunting-yard_algorithm" title="Shunting-yard algorithm">Shunting-yard algorithm</a></li>
+<li><a href="/wiki/Tracing_garbage_collection#Tri-color_marking" title="Tracing garbage collection">Tri-color marking algorithm</a></li>
+<li><a href="/wiki/Concurrent_algorithm" title="Concurrent algorithm">Concurrent algorithm</a></li>
+<li><a href="/wiki/Distributed_algorithm" title="Distributed algorithm">Distributed algorithm</a></li>
+<li><a href="/wiki/Deadlock_prevention_algorithms" title="Deadlock prevention algorithms">Deadlock prevention algorithm</a></li>
+<li><a href="/wiki/Self-stabilization" title="Self-stabilization">Self-stabilizing algorithm</a></li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<th scope="row" class="navbox-group" style="width:1%">Related people</th>
+<td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px">
+<div style="padding:0em 0.25em">
+<ul>
+<li><a href="/wiki/Shlomi_Dolev" title="Shlomi Dolev">Shlomi Dolev</a></li>
+<li><a href="/wiki/Per_Brinch_Hansen" title="Per Brinch Hansen">Per Brinch Hansen</a></li>
+<li><a href="/wiki/Tony_Hoare" title="Tony Hoare">Tony Hoare</a></li>
+<li><a href="/wiki/Ole-Johan_Dahl" title="Ole-Johan Dahl">Ole-Johan Dahl</a></li>
+<li><a href="/wiki/Leslie_Lamport" title="Leslie Lamport">Leslie Lamport</a></li>
+<li><a href="/wiki/David_Parnas" title="David Parnas">David Parnas</a></li>
+<li><a href="/wiki/Adriaan_van_Wijngaarden" title="Adriaan van Wijngaarden">Adriaan van Wijngaarden</a></li>
+<li><a href="/wiki/Niklaus_Wirth" title="Niklaus Wirth">Niklaus Wirth</a></li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th scope="row" class="navbox-group" style="width:1%">Other topics</th>
+<td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px">
+<div style="padding:0em 0.25em">
+<ul>
+<li><a href="/wiki/Dijkstra_Prize" title="Dijkstra Prize">Dijkstra Prize</a> (<a href="/wiki/Edsger_W._Dijkstra_Prize_in_Distributed_Computing" class="mw-redirect" title="Edsger W. Dijkstra Prize in Distributed Computing">Edsger W. Dijkstra Prize in Distributed Computing</a>)</li>
+<li><a href="/wiki/Centrum_Wiskunde_%26_Informatica" title="Centrum Wiskunde &amp; Informatica">Centrum Wiskunde &amp; Informatica</a></li>
+<li><a href="/w/index.php?title=E.W._Dijkstra_Archive&amp;action=edit&amp;redlink=1" class="new" title="E.W. Dijkstra Archive (page does not exist)">E.W. Dijkstra Archive</a> (<a href="/wiki/University_of_Texas_at_Austin" title="University of Texas at Austin">University of Texas at Austin</a>)</li>
+<li><a href="/wiki/List_of_pioneers_in_computer_science" title="List of pioneers in computer science">List of pioneers in computer science</a></li>
+<li><a href="/wiki/List_of_important_publications_in_computer_science" title="List of important publications in computer science">List of important publications in computer science</a></li>
+<li><a href="/wiki/List_of_important_publications_in_theoretical_computer_science" title="List of important publications in theoretical computer science">List of important publications in theoretical computer science</a></li>
+<li><a href="/wiki/List_of_important_publications_in_concurrent,_parallel,_and_distributed_computing" title="List of important publications in concurrent, parallel, and distributed computing">List of important publications in concurrent, parallel, and distributed computing</a></li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td class="navbox-abovebelow" colspan="2">
+<div>
+<ul>
+<li><span class="nowrap"><sup><small>1</small></sup> Dijkstra's numbered manuscripts on computing science.</span></li>
+</ul>
+<ul>
+<li><img alt="Wikiquote page" src="//upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Wikiquote-logo.svg/13px-Wikiquote-logo.svg.png" title="Wikiquote page" width="13" height="16" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Wikiquote-logo.svg/20px-Wikiquote-logo.svg.png 1.5x, //upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Wikiquote-logo.svg/27px-Wikiquote-logo.svg.png 2x" data-file-width="300" data-file-height="355" /> <a href="https://en.wikiquote.org/wiki/Special:Search/Edsger_W._Dijkstra" class="extiw" title="wikiquote:Special:Search/Edsger W. Dijkstra"><b>Wikiquote</b></a></li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+
+<!-- 
+NewPP limit report
+Parsed by mw1255
+Cached time: 20171110010523
+Cache expiry: 1900800
+Dynamic content: false
+CPU time usage: 0.384 seconds
+Real time usage: 0.596 seconds
+Preprocessor visited node count: 3088/1000000
+Preprocessor generated node count: 0/1500000
+Post‐expand include size: 100208/2097152 bytes
+Template argument size: 2546/2097152 bytes
+Highest expansion depth: 12/40
+Expensive parser function count: 1/500
+Lua time usage: 0.151/10.000 seconds
+Lua memory usage: 4.8 MB/50 MB
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%  343.498      1 -total
+ 35.81%  123.022      1 Template:Reflist
+ 16.59%   56.995     14 Template:Cite_journal
+  8.93%   30.670      2 Template:Cite_web
+  8.38%   28.782      7 Template:Cite_book
+  7.36%   25.287      1 Template:Commons_category
+  6.19%   21.273      1 Template:Infobox_algorithm
+  5.65%   19.396      1 Template:Infobox
+  5.52%   18.967      1 Template:Edsger_Dijkstra
+  5.51%   18.927      1 Template:Distinguish
+-->
+</div>
+<!-- Saved in parser cache with key enwiki:pcache:idhash:45809-0!canonical!math=5 and timestamp 20171110010523 and revision id 808682694
+ -->
+<noscript><img src="//en.wikipedia.org/wiki/Special:CentralAutoLogin/start?type=1x1" alt="" title="" width="1" height="1" style="border: none; position: absolute;" /></noscript></div>					<div class="printfooter">
+						Retrieved from "<a dir="ltr" href="https://en.wikipedia.org/w/index.php?title=Dijkstra%27s_algorithm&amp;oldid=808682694">https://en.wikipedia.org/w/index.php?title=Dijkstra%27s_algorithm&amp;oldid=808682694</a>"					</div>
+				<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks"><a href="/wiki/Help:Category" title="Help:Category">Categories</a>: <ul><li><a href="/wiki/Category:Edsger_W._Dijkstra" title="Category:Edsger W. Dijkstra">Edsger W. Dijkstra</a></li><li><a href="/wiki/Category:1959_in_computer_science" title="Category:1959 in computer science">1959 in computer science</a></li><li><a href="/wiki/Category:Graph_algorithms" title="Category:Graph algorithms">Graph algorithms</a></li><li><a href="/wiki/Category:Search_algorithms" title="Category:Search algorithms">Search algorithms</a></li><li><a href="/wiki/Category:Routing_algorithms" title="Category:Routing algorithms">Routing algorithms</a></li><li><a href="/wiki/Category:Combinatorial_optimization" title="Category:Combinatorial optimization">Combinatorial optimization</a></li></ul></div><div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul><li><a href="/wiki/Category:Pages_using_deprecated_image_syntax" title="Category:Pages using deprecated image syntax">Pages using deprecated image syntax</a></li><li><a href="/wiki/Category:Use_dmy_dates_from_February_2011" title="Category:Use dmy dates from February 2011">Use dmy dates from February 2011</a></li><li><a href="/wiki/Category:Articles_with_example_pseudocode" title="Category:Articles with example pseudocode">Articles with example pseudocode</a></li></ul></div></div>				<div class="visualClear"></div>
+							</div>
+		</div>
+		<div id="mw-navigation">
+			<h2>Navigation menu</h2>
+
+			<div id="mw-head">
+									<div id="p-personal" role="navigation" class="" aria-labelledby="p-personal-label">
+						<h3 id="p-personal-label">Personal tools</h3>
+						<ul>
+							<li id="pt-anonuserpage">Not logged in</li><li id="pt-anontalk"><a href="/wiki/Special:MyTalk" title="Discussion about edits from this IP address [n]" accesskey="n">Talk</a></li><li id="pt-anoncontribs"><a href="/wiki/Special:MyContributions" title="A list of edits made from this IP address [y]" accesskey="y">Contributions</a></li><li id="pt-createaccount"><a href="/w/index.php?title=Special:CreateAccount&amp;returnto=Dijkstra%27s+algorithm" title="You are encouraged to create an account and log in; however, it is not mandatory">Create account</a></li><li id="pt-login"><a href="/w/index.php?title=Special:UserLogin&amp;returnto=Dijkstra%27s+algorithm" title="You're encouraged to log in; however, it's not mandatory. [o]" accesskey="o">Log in</a></li>						</ul>
+					</div>
+									<div id="left-navigation">
+										<div id="p-namespaces" role="navigation" class="vectorTabs" aria-labelledby="p-namespaces-label">
+						<h3 id="p-namespaces-label">Namespaces</h3>
+						<ul>
+														<li id="ca-nstab-main" class="selected"><span><a href="/wiki/Dijkstra%27s_algorithm" title="View the content page [c]" accesskey="c">Article</a></span></li>
+							<li id="ca-talk"><span><a href="/wiki/Talk:Dijkstra%27s_algorithm" rel="discussion" title="Discussion about the content page [t]" accesskey="t">Talk</a></span></li>
+						</ul>
+					</div>
+										<div id="p-variants" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-variants-label">
+												<h3 id="p-variants-label">
+							<span>Variants</span>
+						</h3>
+
+						<div class="menu">
+							<ul>
+															</ul>
+						</div>
+					</div>
+									</div>
+				<div id="right-navigation">
+										<div id="p-views" role="navigation" class="vectorTabs" aria-labelledby="p-views-label">
+						<h3 id="p-views-label">Views</h3>
+						<ul>
+														<li id="ca-view" class="collapsible selected"><span><a href="/wiki/Dijkstra%27s_algorithm">Read</a></span></li>
+							<li id="ca-edit" class="collapsible"><span><a href="/w/index.php?title=Dijkstra%27s_algorithm&amp;action=edit" title="Edit this page [e]" accesskey="e">Edit</a></span></li>
+							<li id="ca-history" class="collapsible"><span><a href="/w/index.php?title=Dijkstra%27s_algorithm&amp;action=history" title="Past revisions of this page [h]" accesskey="h">View history</a></span></li>
+						</ul>
+					</div>
+										<div id="p-cactions" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-cactions-label">
+						<h3 id="p-cactions-label"><span>More</span></h3>
+
+						<div class="menu">
+							<ul>
+															</ul>
+						</div>
+					</div>
+										<div id="p-search" role="search">
+						<h3>
+							<label for="searchInput">Search</label>
+						</h3>
+
+						<form action="/w/index.php" id="searchform">
+							<div id="simpleSearch">
+							<input type="search" name="search" placeholder="Search Wikipedia" title="Search Wikipedia [f]" accesskey="f" id="searchInput"/><input type="hidden" value="Special:Search" name="title"/><input type="submit" name="fulltext" value="Search" title="Search Wikipedia for this text" id="mw-searchButton" class="searchButton mw-fallbackSearchButton"/><input type="submit" name="go" value="Go" title="Go to a page with this exact name if it exists" id="searchButton" class="searchButton"/>							</div>
+						</form>
+					</div>
+									</div>
+			</div>
+			<div id="mw-panel">
+				<div id="p-logo" role="banner"><a class="mw-wiki-logo" href="/wiki/Main_Page"  title="Visit the main page"></a></div>
+						<div class="portal" role="navigation" id='p-navigation' aria-labelledby='p-navigation-label'>
+			<h3 id='p-navigation-label'>Navigation</h3>
+
+			<div class="body">
+									<ul>
+						<li id="n-mainpage-description"><a href="/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li><li id="n-contents"><a href="/wiki/Portal:Contents" title="Guides to browsing Wikipedia">Contents</a></li><li id="n-featuredcontent"><a href="/wiki/Portal:Featured_content" title="Featured content – the best of Wikipedia">Featured content</a></li><li id="n-currentevents"><a href="/wiki/Portal:Current_events" title="Find background information on current events">Current events</a></li><li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random article [x]" accesskey="x">Random article</a></li><li id="n-sitesupport"><a href="https://donate.wikimedia.org/wiki/Special:FundraiserRedirector?utm_source=donate&amp;utm_medium=sidebar&amp;utm_campaign=C13_en.wikipedia.org&amp;uselang=en" title="Support us">Donate to Wikipedia</a></li><li id="n-shoplink"><a href="//shop.wikimedia.org" title="Visit the Wikipedia store">Wikipedia store</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id='p-interaction' aria-labelledby='p-interaction-label'>
+			<h3 id='p-interaction-label'>Interaction</h3>
+
+			<div class="body">
+									<ul>
+						<li id="n-help"><a href="/wiki/Help:Contents" title="Guidance on how to use and edit Wikipedia">Help</a></li><li id="n-aboutsite"><a href="/wiki/Wikipedia:About" title="Find out about Wikipedia">About Wikipedia</a></li><li id="n-portal"><a href="/wiki/Wikipedia:Community_portal" title="About the project, what you can do, where to find things">Community portal</a></li><li id="n-recentchanges"><a href="/wiki/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li><li id="n-contactpage"><a href="//en.wikipedia.org/wiki/Wikipedia:Contact_us" title="How to contact Wikipedia">Contact page</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id='p-tb' aria-labelledby='p-tb-label'>
+			<h3 id='p-tb-label'>Tools</h3>
+
+			<div class="body">
+									<ul>
+						<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/Dijkstra%27s_algorithm" title="List of all English Wikipedia pages containing links to this page [j]" accesskey="j">What links here</a></li><li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/Dijkstra%27s_algorithm" rel="nofollow" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li><li id="t-upload"><a href="/wiki/Wikipedia:File_Upload_Wizard" title="Upload files [u]" accesskey="u">Upload file</a></li><li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li><li id="t-permalink"><a href="/w/index.php?title=Dijkstra%27s_algorithm&amp;oldid=808682694" title="Permanent link to this revision of the page">Permanent link</a></li><li id="t-info"><a href="/w/index.php?title=Dijkstra%27s_algorithm&amp;action=info" title="More information about this page">Page information</a></li><li id="t-wikibase"><a href="https://www.wikidata.org/wiki/Special:EntityPage/Q8548" title="Link to connected data repository item [g]" accesskey="g">Wikidata item</a></li><li id="t-cite"><a href="/w/index.php?title=Special:CiteThisPage&amp;page=Dijkstra%27s_algorithm&amp;id=808682694" title="Information on how to cite this page">Cite this page</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id='p-coll-print_export' aria-labelledby='p-coll-print_export-label'>
+			<h3 id='p-coll-print_export-label'>Print/export</h3>
+
+			<div class="body">
+									<ul>
+						<li id="coll-create_a_book"><a href="/w/index.php?title=Special:Book&amp;bookcmd=book_creator&amp;referer=Dijkstra%27s+algorithm">Create a book</a></li><li id="coll-download-as-rdf2latex"><a href="/w/index.php?title=Special:ElectronPdf&amp;page=Dijkstra%27s+algorithm&amp;action=show-download-screen">Download as PDF</a></li><li id="t-print"><a href="/w/index.php?title=Dijkstra%27s_algorithm&amp;printable=yes" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id='p-wikibase-otherprojects' aria-labelledby='p-wikibase-otherprojects-label'>
+			<h3 id='p-wikibase-otherprojects-label'>In other projects</h3>
+
+			<div class="body">
+									<ul>
+						<li class="wb-otherproject-link wb-otherproject-commons"><a href="https://commons.wikimedia.org/wiki/Category:Dijkstra%27s_algorithm" hreflang="en">Wikimedia Commons</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id='p-lang' aria-labelledby='p-lang-label'>
+			<h3 id='p-lang-label'>Languages</h3>
+
+			<div class="body">
+									<ul>
+						<li class="interlanguage-link interwiki-ar"><a href="https://ar.wikipedia.org/wiki/%D8%AE%D9%88%D8%A7%D8%B1%D8%B2%D9%85%D9%8A%D8%A9_%D8%AF%D9%8A%D9%83%D8%B3%D8%AA%D8%B1%D8%A7" title="خوارزمية ديكسترا – Arabic" lang="ar" hreflang="ar" class="interlanguage-link-target">العربية</a></li><li class="interlanguage-link interwiki-bg"><a href="https://bg.wikipedia.org/wiki/%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D1%8A%D0%BC_%D0%BD%D0%B0_%D0%94%D0%B5%D0%B9%D0%BA%D1%81%D1%82%D1%80%D0%B0" title="Алгоритъм на Дейкстра – Bulgarian" lang="bg" hreflang="bg" class="interlanguage-link-target">Български</a></li><li class="interlanguage-link interwiki-bs"><a href="https://bs.wikipedia.org/wiki/Dijkstrin_algoritam" title="Dijkstrin algoritam – Bosnian" lang="bs" hreflang="bs" class="interlanguage-link-target">Bosanski</a></li><li class="interlanguage-link interwiki-ca"><a href="https://ca.wikipedia.org/wiki/Algorisme_de_Dijkstra" title="Algorisme de Dijkstra – Catalan" lang="ca" hreflang="ca" class="interlanguage-link-target">Català</a></li><li class="interlanguage-link interwiki-cs"><a href="https://cs.wikipedia.org/wiki/Dijkstr%C5%AFv_algoritmus" title="Dijkstrův algoritmus – Czech" lang="cs" hreflang="cs" class="interlanguage-link-target">Čeština</a></li><li class="interlanguage-link interwiki-de"><a href="https://de.wikipedia.org/wiki/Dijkstra-Algorithmus" title="Dijkstra-Algorithmus – German" lang="de" hreflang="de" class="interlanguage-link-target">Deutsch</a></li><li class="interlanguage-link interwiki-et"><a href="https://et.wikipedia.org/wiki/Dijkstra_algoritm" title="Dijkstra algoritm – Estonian" lang="et" hreflang="et" class="interlanguage-link-target">Eesti</a></li><li class="interlanguage-link interwiki-el"><a href="https://el.wikipedia.org/wiki/%CE%91%CE%BB%CE%B3%CF%8C%CF%81%CE%B9%CE%B8%CE%BC%CE%BF%CF%82_%CF%84%CE%BF%CF%85_Dijkstra" title="Αλγόριθμος του Dijkstra – Greek" lang="el" hreflang="el" class="interlanguage-link-target">Ελληνικά</a></li><li class="interlanguage-link interwiki-es"><a href="https://es.wikipedia.org/wiki/Algoritmo_de_Dijkstra" title="Algoritmo de Dijkstra – Spanish" lang="es" hreflang="es" class="interlanguage-link-target">Español</a></li><li class="interlanguage-link interwiki-eu"><a href="https://eu.wikipedia.org/wiki/Dijkstraren_algoritmo" title="Dijkstraren algoritmo – Basque" lang="eu" hreflang="eu" class="interlanguage-link-target">Euskara</a></li><li class="interlanguage-link interwiki-fa"><a href="https://fa.wikipedia.org/wiki/%D8%A7%D9%84%DA%AF%D9%88%D8%B1%DB%8C%D8%AA%D9%85_%D8%AF%DA%A9%D8%B3%D8%AA%D8%B1%D8%A7" title="الگوریتم دکسترا – Persian" lang="fa" hreflang="fa" class="interlanguage-link-target">فارسی</a></li><li class="interlanguage-link interwiki-fr"><a href="https://fr.wikipedia.org/wiki/Algorithme_de_Dijkstra" title="Algorithme de Dijkstra – French" lang="fr" hreflang="fr" class="interlanguage-link-target">Français</a></li><li class="interlanguage-link interwiki-ko"><a href="https://ko.wikipedia.org/wiki/%EB%8D%B0%EC%9D%B4%ED%81%AC%EC%8A%A4%ED%8A%B8%EB%9D%BC_%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98" title="데이크스트라 알고리즘 – Korean" lang="ko" hreflang="ko" class="interlanguage-link-target">한국어</a></li><li class="interlanguage-link interwiki-hy"><a href="https://hy.wikipedia.org/wiki/%D4%B4%D5%A5%D6%84%D5%BD%D5%BF%D6%80%D5%A1%D5%B5%D5%AB_%D5%A1%D5%AC%D5%A3%D5%B8%D6%80%D5%AB%D5%A9%D5%B4" title="Դեքստրայի ալգորիթմ – Armenian" lang="hy" hreflang="hy" class="interlanguage-link-target">Հայերեն</a></li><li class="interlanguage-link interwiki-hi"><a href="https://hi.wikipedia.org/wiki/%E0%A4%A1%E0%A4%BF%E0%A4%9C%E0%A4%95%E0%A5%8D%E0%A4%B8%E0%A5%8D%E0%A4%9F%E0%A5%8D%E0%A4%B0%E0%A4%BE_%E0%A4%95%E0%A4%BE_%E0%A4%85%E0%A4%B2%E0%A5%8D%E0%A4%97%E0%A5%8B%E0%A4%B0%E0%A4%BF%E0%A4%A6%E0%A5%8D%E0%A4%AE" title="डिजक्स्ट्रा का अल्गोरिद्म – Hindi" lang="hi" hreflang="hi" class="interlanguage-link-target">हिन्दी</a></li><li class="interlanguage-link interwiki-hr"><a href="https://hr.wikipedia.org/wiki/Dijkstrin_algoritam" title="Dijkstrin algoritam – Croatian" lang="hr" hreflang="hr" class="interlanguage-link-target">Hrvatski</a></li><li class="interlanguage-link interwiki-id"><a href="https://id.wikipedia.org/wiki/Algoritma_Dijkstra" title="Algoritma Dijkstra – Indonesian" lang="id" hreflang="id" class="interlanguage-link-target">Bahasa Indonesia</a></li><li class="interlanguage-link interwiki-it"><a href="https://it.wikipedia.org/wiki/Algoritmo_di_Dijkstra" title="Algoritmo di Dijkstra – Italian" lang="it" hreflang="it" class="interlanguage-link-target">Italiano</a></li><li class="interlanguage-link interwiki-he"><a href="https://he.wikipedia.org/wiki/%D7%90%D7%9C%D7%92%D7%95%D7%A8%D7%99%D7%AA%D7%9D_%D7%93%D7%99%D7%99%D7%A7%D7%A1%D7%98%D7%A8%D7%94" title="אלגוריתם דייקסטרה – Hebrew" lang="he" hreflang="he" class="interlanguage-link-target">עברית</a></li><li class="interlanguage-link interwiki-lv"><a href="https://lv.wikipedia.org/wiki/Deikstras_algoritms" title="Deikstras algoritms – Latvian" lang="lv" hreflang="lv" class="interlanguage-link-target">Latviešu</a></li><li class="interlanguage-link interwiki-lt"><a href="https://lt.wikipedia.org/wiki/Dijkstros_algoritmas" title="Dijkstros algoritmas – Lithuanian" lang="lt" hreflang="lt" class="interlanguage-link-target">Lietuvių</a></li><li class="interlanguage-link interwiki-hu"><a href="https://hu.wikipedia.org/wiki/Dijkstra-algoritmus" title="Dijkstra-algoritmus – Hungarian" lang="hu" hreflang="hu" class="interlanguage-link-target">Magyar</a></li><li class="interlanguage-link interwiki-mk"><a href="https://mk.wikipedia.org/wiki/%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%B0%D0%BC_%D0%BD%D0%B0_%D0%94%D0%B0%D1%98%D0%BA%D1%81%D1%82%D1%80%D0%B0" title="Алгоритам на Дајкстра – Macedonian" lang="mk" hreflang="mk" class="interlanguage-link-target">Македонски</a></li><li class="interlanguage-link interwiki-nl"><a href="https://nl.wikipedia.org/wiki/Kortstepad-algoritme" title="Kortstepad-algoritme – Dutch" lang="nl" hreflang="nl" class="interlanguage-link-target">Nederlands</a></li><li class="interlanguage-link interwiki-ja"><a href="https://ja.wikipedia.org/wiki/%E3%83%80%E3%82%A4%E3%82%AF%E3%82%B9%E3%83%88%E3%83%A9%E6%B3%95" title="ダイクストラ法 – Japanese" lang="ja" hreflang="ja" class="interlanguage-link-target">日本語</a></li><li class="interlanguage-link interwiki-no"><a href="https://no.wikipedia.org/wiki/Dijkstras_algoritme" title="Dijkstras algoritme – Norwegian" lang="no" hreflang="no" class="interlanguage-link-target">Norsk</a></li><li class="interlanguage-link interwiki-pl"><a href="https://pl.wikipedia.org/wiki/Algorytm_Dijkstry" title="Algorytm Dijkstry – Polish" lang="pl" hreflang="pl" class="interlanguage-link-target">Polski</a></li><li class="interlanguage-link interwiki-pt"><a href="https://pt.wikipedia.org/wiki/Algoritmo_de_Dijkstra" title="Algoritmo de Dijkstra – Portuguese" lang="pt" hreflang="pt" class="interlanguage-link-target">Português</a></li><li class="interlanguage-link interwiki-ro"><a href="https://ro.wikipedia.org/wiki/Algoritmul_lui_Dijkstra" title="Algoritmul lui Dijkstra – Romanian" lang="ro" hreflang="ro" class="interlanguage-link-target">Română</a></li><li class="interlanguage-link interwiki-ru"><a href="https://ru.wikipedia.org/wiki/%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC_%D0%94%D0%B5%D0%B9%D0%BA%D1%81%D1%82%D1%80%D1%8B" title="Алгоритм Дейкстры – Russian" lang="ru" hreflang="ru" class="interlanguage-link-target">Русский</a></li><li class="interlanguage-link interwiki-simple"><a href="https://simple.wikipedia.org/wiki/Dijkstra%27s_algorithm" title="Dijkstra's algorithm – Simple English" lang="simple" hreflang="simple" class="interlanguage-link-target">Simple English</a></li><li class="interlanguage-link interwiki-sk"><a href="https://sk.wikipedia.org/wiki/Dijkstrov_algoritmus" title="Dijkstrov algoritmus – Slovak" lang="sk" hreflang="sk" class="interlanguage-link-target">Slovenčina</a></li><li class="interlanguage-link interwiki-sl"><a href="https://sl.wikipedia.org/wiki/Dijkstrov_algoritem" title="Dijkstrov algoritem – Slovenian" lang="sl" hreflang="sl" class="interlanguage-link-target">Slovenščina</a></li><li class="interlanguage-link interwiki-sr"><a href="https://sr.wikipedia.org/wiki/%D0%94%D0%B0%D1%98%D0%BA%D1%81%D1%82%D1%80%D0%B8%D0%BD_%D0%B0%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%B0%D0%BC" title="Дајкстрин алгоритам – Serbian" lang="sr" hreflang="sr" class="interlanguage-link-target">Српски / srpski</a></li><li class="interlanguage-link interwiki-sh"><a href="https://sh.wikipedia.org/wiki/Dijkstrin_algoritam" title="Dijkstrin algoritam – Serbo-Croatian" lang="sh" hreflang="sh" class="interlanguage-link-target">Srpskohrvatski / српскохрватски</a></li><li class="interlanguage-link interwiki-fi"><a href="https://fi.wikipedia.org/wiki/Dijkstran_algoritmi" title="Dijkstran algoritmi – Finnish" lang="fi" hreflang="fi" class="interlanguage-link-target">Suomi</a></li><li class="interlanguage-link interwiki-sv"><a href="https://sv.wikipedia.org/wiki/Dijkstras_algoritm" title="Dijkstras algoritm – Swedish" lang="sv" hreflang="sv" class="interlanguage-link-target">Svenska</a></li><li class="interlanguage-link interwiki-th"><a href="https://th.wikipedia.org/wiki/%E0%B8%82%E0%B8%B1%E0%B9%89%E0%B8%99%E0%B8%95%E0%B8%AD%E0%B8%99%E0%B8%A7%E0%B8%B4%E0%B8%98%E0%B8%B5%E0%B8%82%E0%B8%AD%E0%B8%87%E0%B9%84%E0%B8%94%E0%B8%81%E0%B9%8C%E0%B8%AA%E0%B8%95%E0%B8%A3%E0%B8%B2" title="ขั้นตอนวิธีของไดก์สตรา – Thai" lang="th" hreflang="th" class="interlanguage-link-target">ไทย</a></li><li class="interlanguage-link interwiki-uk"><a href="https://uk.wikipedia.org/wiki/%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC_%D0%94%D0%B5%D0%B9%D0%BA%D1%81%D1%82%D1%80%D0%B8" title="Алгоритм Дейкстри – Ukrainian" lang="uk" hreflang="uk" class="interlanguage-link-target">Українська</a></li><li class="interlanguage-link interwiki-vi"><a href="https://vi.wikipedia.org/wiki/Thu%E1%BA%ADt_to%C3%A1n_Dijkstra" title="Thuật toán Dijkstra – Vietnamese" lang="vi" hreflang="vi" class="interlanguage-link-target">Tiếng Việt</a></li><li class="interlanguage-link interwiki-zh"><a href="https://zh.wikipedia.org/wiki/%E6%88%B4%E5%85%8B%E6%96%AF%E7%89%B9%E6%8B%89%E7%AE%97%E6%B3%95" title="戴克斯特拉算法 – Chinese" lang="zh" hreflang="zh" class="interlanguage-link-target">中文</a></li>					</ul>
+				<div class="after-portlet after-portlet-lang"><span class="wb-langlinks-edit wb-langlinks-link"><a href="https://www.wikidata.org/wiki/Special:EntityPage/Q8548#sitelinks-wikipedia" title="Edit interlanguage links" class="wbc-editpage">Edit links</a></span></div>			</div>
+		</div>
+				</div>
+		</div>
+		<div id="footer" role="contentinfo">
+							<ul id="footer-info">
+											<li id="footer-info-lastmod"> This page was last edited on 4 November 2017, at 13:11.</li>
+											<li id="footer-info-copyright">Text is available under the <a rel="license" href="//en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License">Creative Commons Attribution-ShareAlike License</a><a rel="license" href="//creativecommons.org/licenses/by-sa/3.0/" style="display:none;"></a>;
+additional terms may apply.  By using this site, you agree to the <a href="//wikimediafoundation.org/wiki/Terms_of_Use">Terms of Use</a> and <a href="//wikimediafoundation.org/wiki/Privacy_policy">Privacy Policy</a>. Wikipedia® is a registered trademark of the <a href="//www.wikimediafoundation.org/">Wikimedia Foundation, Inc.</a>, a non-profit organization.</li>
+									</ul>
+							<ul id="footer-places">
+											<li id="footer-places-privacy"><a href="https://wikimediafoundation.org/wiki/Privacy_policy" class="extiw" title="wmf:Privacy policy">Privacy policy</a></li>
+											<li id="footer-places-about"><a href="/wiki/Wikipedia:About" title="Wikipedia:About">About Wikipedia</a></li>
+											<li id="footer-places-disclaimer"><a href="/wiki/Wikipedia:General_disclaimer" title="Wikipedia:General disclaimer">Disclaimers</a></li>
+											<li id="footer-places-contact"><a href="//en.wikipedia.org/wiki/Wikipedia:Contact_us">Contact Wikipedia</a></li>
+											<li id="footer-places-developers"><a href="https://www.mediawiki.org/wiki/Special:MyLanguage/How_to_contribute">Developers</a></li>
+											<li id="footer-places-cookiestatement"><a href="https://wikimediafoundation.org/wiki/Cookie_statement">Cookie statement</a></li>
+											<li id="footer-places-mobileview"><a href="//en.m.wikipedia.org/w/index.php?title=Dijkstra%27s_algorithm&amp;mobileaction=toggle_view_mobile" class="noprint stopMobileRedirectToggle">Mobile view</a></li>
+									</ul>
+										<ul id="footer-icons" class="noprint">
+											<li id="footer-copyrightico">
+							<a href="https://wikimediafoundation.org/"><img src="/static/images/wikimedia-button.png" srcset="/static/images/wikimedia-button-1.5x.png 1.5x, /static/images/wikimedia-button-2x.png 2x" width="88" height="31" alt="Wikimedia Foundation"/></a>						</li>
+											<li id="footer-poweredbyico">
+							<a href="//www.mediawiki.org/"><img src="/static/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" srcset="/static/images/poweredby_mediawiki_132x47.png 1.5x, /static/images/poweredby_mediawiki_176x62.png 2x" width="88" height="31"/></a>						</li>
+									</ul>
+						<div style="clear:both"></div>
+		</div>
+		<script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgPageParseReport":{"limitreport":{"cputime":"0.384","walltime":"0.596","ppvisitednodes":{"value":3088,"limit":1000000},"ppgeneratednodes":{"value":0,"limit":1500000},"postexpandincludesize":{"value":100208,"limit":2097152},"templateargumentsize":{"value":2546,"limit":2097152},"expansiondepth":{"value":12,"limit":40},"expensivefunctioncount":{"value":1,"limit":500},"entityaccesscount":{"value":1,"limit":400},"timingprofile":["100.00%  343.498      1 -total"," 35.81%  123.022      1 Template:Reflist"," 16.59%   56.995     14 Template:Cite_journal","  8.93%   30.670      2 Template:Cite_web","  8.38%   28.782      7 Template:Cite_book","  7.36%   25.287      1 Template:Commons_category","  6.19%   21.273      1 Template:Infobox_algorithm","  5.65%   19.396      1 Template:Infobox","  5.52%   18.967      1 Template:Edsger_Dijkstra","  5.51%   18.927      1 Template:Distinguish"]},"scribunto":{"limitreport-timeusage":{"value":"0.151","limit":"10.000"},"limitreport-memusage":{"value":5029378,"limit":52428800}},"cachereport":{"origin":"mw1255","timestamp":"20171110010523","ttl":1900800,"transientcontent":false}}});});</script><script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgBackendResponseTime":109,"wgHostname":"mw1270"});});</script>
+	</body>
+</html>
